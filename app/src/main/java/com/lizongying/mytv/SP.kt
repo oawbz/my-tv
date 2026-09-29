@@ -18,13 +18,9 @@ object SP {
     // If start app on device boot or not
     private const val KEY_BOOT_STARTUP = "boot_startup"
 
-    private const val KEY_GRID = "grid"
-
     // Position in list of the selected channel item
     private const val KEY_POSITION = "position"
-
-    // guid
-    private const val KEY_GUID = "guid"
+    private const val KEY_SELECTED_CHANNEL = "selected_channel"
 
     private lateinit var sp: SharedPreferences
 
@@ -51,15 +47,12 @@ object SP {
         get() = sp.getBoolean(KEY_BOOT_STARTUP, false)
         set(value) = sp.edit().putBoolean(KEY_BOOT_STARTUP, value).apply()
 
-    var grid: Boolean
-        get() = sp.getBoolean(KEY_GRID, false)
-        set(value) = sp.edit().putBoolean(KEY_GRID, value).apply()
-
     var itemPosition: Int
         get() = sp.getInt(KEY_POSITION, 0)
         set(value) = sp.edit().putInt(KEY_POSITION, value).apply()
 
-    var guid: String
-        get() = sp.getString(KEY_GUID, "") ?: ""
-        set(value) = sp.edit().putString(KEY_GUID, value).apply()
+    var selectedChannel: String
+        get() = sp.getString(KEY_SELECTED_CHANNEL, "").orEmpty()
+        set(value) = sp.edit().putString(KEY_SELECTED_CHANNEL, value).apply()
+
 }

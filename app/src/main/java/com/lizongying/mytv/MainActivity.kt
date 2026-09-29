@@ -1,9 +1,5 @@
 package com.lizongying.mytv
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.net.Network
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -11,29 +7,23 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
-import android.view.View
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.models.TVViewModel
-import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 
-class MainActivity : FragmentActivity(), Request.RequestListener {
+class MainActivity : FragmentActivity() {
 
-    private var ready = 0
-    private val playerFragment = PlayerFragment()
-    private val mainFragment = MainFragment()
-    private val infoFragment = InfoFragment()
-    private val channelFragment = ChannelFragment()
-    private var timeFragment = TimeFragment()
-    private val settingFragment = SettingFragment()
-    private val errorFragment = ErrorFragment()
+    private val readyFragments = mutableSetOf<String>()
+    private var playbackStarted = false
+    private lateinit var playerFragment: PlayerFragment
+    private lateinit var mainFragment: MainFragment
+    private lateinit var infoFragment: InfoFragment
+    private lateinit var channelFragment: ChannelFragment
+    private lateinit var timeFragment: TimeFragment
+    private lateinit var settingFragment: SettingFragment
 
     private var doubleBackToExitPressedOnce = false
 
@@ -43,23 +33,19 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     private val delayHideMain: Long = 10000
     private val delayHideSetting: Long = 10000
 
-    init {
-        lifecycleScope.launch(Dispatchers.IO) {
-            val utilsJob = async(start = CoroutineStart.LAZY) { Utils.init() }
-
-            utilsJob.start()
-
-//            utilsJob.await()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_main)
+        val restored = supportFragmentManager.fragments
+        playerFragment = restored.filterIsInstance<PlayerFragment>().firstOrNull() ?: PlayerFragment()
+        mainFragment = restored.filterIsInstance<MainFragment>().firstOrNull() ?: MainFragment()
+        infoFragment = restored.filterIsInstance<InfoFragment>().firstOrNull() ?: InfoFragment()
+        channelFragment = restored.filterIsInstance<ChannelFragment>().firstOrNull() ?: ChannelFragment()
+        timeFragment = restored.filterIsInstance<TimeFragment>().firstOrNull() ?: TimeFragment()
+        settingFragment = restored.filterIsInstance<SettingFragment>().firstOrNull() ?: SettingFragment()
 
-        Request.setRequestListener(this)
+        setContentView(R.layout.activity_main)
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -76,31 +62,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                 .commit()
         }
         gestureDetector = GestureDetector(this, GestureListener())
-
-        errorFragment.buttonClickListener = View.OnClickListener {
-            supportFragmentManager.beginTransaction()
-                .remove(errorFragment)
-                .commit()
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val connectivityManager =
-                getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            connectivityManager.registerDefaultNetworkCallback(object :
-                ConnectivityManager.NetworkCallback() {
-                override fun onAvailable(network: Network) {
-                    super.onAvailable(network)
-                    Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
-                    if (this@MainActivity.isNetworkConnected) {
-                        Log.i(TAG, "net isNetworkConnected")
-                        ready++
-                    }
-                }
-            })
-        } else {
-            Log.i(TAG, "net ${Build.VERSION.SDK_INT}")
-            ready++
-        }
 
     }
 
@@ -130,6 +91,10 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         mainFragment.view?.requestFocus()
     }
 
+    fun showChannelSwitching() {
+        playerFragment.showSwitching()
+    }
+
     fun play(itemPosition: Int) {
         mainFragment.play(itemPosition)
     }
@@ -140,14 +105,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
 
     fun next() {
         mainFragment.next()
-    }
-
-    private fun prevSource() {
-//        mainFragment.prevSource()
-    }
-
-    private fun nextSource() {
-//        mainFragment.nextSource()
     }
 
     fun switchMainFragment() {
@@ -174,23 +131,10 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         showTime()
     }
 
-    fun settingHideNow() {
-        handler.removeCallbacks(hideSetting)
-        handler.postDelayed(hideSetting, 0)
-    }
-
-    fun settingNeverHide() {
-        handler.removeCallbacks(hideSetting)
-    }
-
     private val hideMain = Runnable {
         if (!mainFragment.isHidden) {
             supportFragmentManager.beginTransaction().hide(mainFragment).commit()
         }
-    }
-
-    private fun mainFragmentIsHidden(): Boolean {
-        return mainFragment.isHidden
     }
 
     private fun hideMainFragment() {
@@ -202,12 +146,18 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
     }
 
     fun fragmentReady(tag: String) {
-        ready++
-        Log.i(TAG, "ready $tag $ready ")
-        if (ready == 6) {
+        readyFragments.add(tag)
+        Log.i(TAG, "ready $tag")
+        if (readyFragments.containsAll(REQUIRED_FRAGMENTS) && !playbackStarted) {
+            playbackStarted = true
             mainFragment.fragmentReady()
             showTime()
         }
+    }
+
+    fun fragmentUnavailable(tag: String) {
+        readyFragments.remove(tag)
+        playbackStarted = false
     }
 
     private fun showTime() {
@@ -216,14 +166,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             timeFragment.show()
         } else {
             timeFragment.hide()
-        }
-    }
-
-    fun isPlaying() {
-        if (errorFragment.isVisible) {
-            supportFragmentManager.beginTransaction()
-                .remove(errorFragment)
-                .commit()
         }
     }
 
@@ -255,24 +197,11 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
             if (velocityY > 0) {
                 if (mainFragment.isHidden) {
                     prev()
-                } else {
-//                    if (mainFragment.selectedPosition == 0) {
-//                        mainFragment.setSelectedPosition(
-//                            mainFragment.tvListViewModel.maxNum.size - 1,
-//                            false
-//                        )
-//                    }
                 }
             }
             if (velocityY < 0) {
                 if (mainFragment.isHidden) {
                     next()
-                } else {
-//                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
-////                        mainFragment.setSelectedPosition(0, false)
-//                        hideMainFragment()
-//                        return false
-//                    }
                 }
             }
             return super.onFling(e1, e2, velocityX, velocityY)
@@ -307,13 +236,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                 return
             }
             prev()
-        } else {
-//                    if (mainFragment.selectedPosition == 0) {
-//                        mainFragment.setSelectedPosition(
-//                            mainFragment.tvListViewModel.maxNum.size - 1,
-//                            false
-//                        )
-//                    }
         }
     }
 
@@ -324,17 +246,11 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
                 return
             }
             next()
-        } else {
-//                    if (mainFragment.selectedPosition == mainFragment.tvListViewModel.maxNum.size - 1) {
-////                        mainFragment.setSelectedPosition(0, false)
-//                        hideMainFragment()
-//                        return false
-//                    }
         }
     }
 
     private fun back() {
-        if (!mainFragmentIsHidden()) {
+        if (!mainFragment.isHidden) {
             hideMainFragment()
             return
         }
@@ -482,8 +398,6 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         return super.onKeyDown(keyCode, event)
     }
 
-    private fun getAppSignature() = this.appSignature
-
     override fun onStart() {
         Log.i(TAG, "onStart")
         super.onStart()
@@ -501,24 +415,13 @@ class MainActivity : FragmentActivity(), Request.RequestListener {
         Log.i(TAG, "onPause")
         super.onPause()
         handler.removeCallbacks(hideMain)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Request.onDestroy()
-    }
-
-    override fun onRequestFinished(message: String?) {
-        if (message != null && !errorFragment.isVisible) {
-            supportFragmentManager.beginTransaction()
-                .add(R.id.main_browse_fragment, errorFragment)
-                .commitNow()
-            errorFragment.setErrorContent(message)
-        }
-        fragmentReady("Request")
+        handler.removeCallbacks(hideSetting)
     }
 
     private companion object {
         const val TAG = "MainActivity"
+        val REQUIRED_FRAGMENTS = setOf(
+            "PlayerFragment", "MainFragment", "InfoFragment", "ChannelFragment", "TimeFragment"
+        )
     }
 }

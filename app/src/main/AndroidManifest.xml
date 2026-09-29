@@ -9,8 +9,6 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
@@ -23,8 +21,7 @@
         android:logo="@drawable/logo"
         android:networkSecurityConfig="@xml/network"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyTV"
-        android:usesCleartextTraffic="true">
+        android:theme="@style/Theme.MyTV">
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -43,20 +40,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <receiver
-            android:name=".NetworkChangeReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-            </intent-filter>
-        </receiver>
-
-        <provider
-            android:name=".InitializerProvider"
-            android:authorities="${applicationId}.InitializerProvider"
-            android:exported="false" />
     </application>
 </manifest>

@@ -2,12 +2,12 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.lizongying.mytv.databinding.InfoBinding
 import com.lizongying.mytv.models.TVViewModel
 
@@ -31,16 +31,13 @@ class InfoFragment : Fragment() {
     fun show(tvViewModel: TVViewModel) {
         binding.textView.text = tvViewModel.getTV().title
 
-        Glide.with(this)
-            .load(tvViewModel.getTV().logo)
-            .into(binding.infoLogo)
-
-        Log.i(TAG, "${tvViewModel.getTV().title} ${tvViewModel.epg.value}")
-        val epg = tvViewModel.epg.value?.filter { it.beginTime < Utils.getDateTimestamp() }
-        if (!epg.isNullOrEmpty()) {
-            binding.infoDesc.text = epg.last().title
+        val logo = tvViewModel.getTV().logo
+        if (logo.isNotEmpty()) {
+            Glide.with(this).load(logo)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .centerInside().into(binding.infoLogo)
         } else {
-            binding.infoDesc.text = ""
+            Glide.with(this).clear(binding.infoLogo)
         }
 
         handler.removeCallbacks(removeRunnable)
@@ -65,9 +62,5 @@ class InfoFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    companion object {
-        private const val TAG = "InfoFragment"
     }
 }

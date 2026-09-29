@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "channels": [
+    {
+      "name": "CCTV1 综合",
+      "group": "央视",
+      "urls": [
+        "http://74.91.26.218:82/live/cctv1hd.m3u8"
+      ],
+      "logo": "https://i.imgur.com/TpA3cUl.png"
+    },
+    {
+      "name": "CCTV2 财经",
+      "group": "央视",
+      "urls": [
+        "http://74.91.26.218:82/live/cctv2hd.m3u8"
+      ],
+      "logo": "https://i.imgur.com/ILamhwU.png"
+    },
+    {
+      "name": "CCTV3 综艺",
+      "group": "央视",
+      "urls": [
+        "http://74.91.26.218:82/live/cctv3hd.m3u8"
+      ],
+      "logo": "https://i.imgur.com/iFlkIuw.png"
+    },
+    {
+      "name": "CCTV6 电影",
+      "group": "央视",
+      "urls": [
+        "http://69.30.245.50/live/cctv6.m3u8"
+      ],
+      "logo": "https://i.imgur.com/rFiaef7.png"
+    },
+    {
+      "name": "CCTV7 国防军事",
+      "group": "央视",
+      "urls": [
+        "http://74.91.26.218:82/live/cctv7hd.m3u8"
+      ],
+      "logo": "https://i.imgur.com/CKcPMQC.png"
+    },
+    {
+      "name": "CCTV8 电视剧",
+      "group": "央视",
+      "urls": [
+        "http://74.91.26.218:82/live/cctv8hd.m3u8"
+      ],
+      "logo": "https://i.imgur.com/GyHaZ8X.png"
+    },
+    {
+      "name": "CCTV9 纪录",
+      "group": "央视",
+      "urls": [
+        "https://xykt-fix.github.io/Y77.m3u8"
+      ],
+      "logo": "https://i.imgur.com/3tivvMm.png"
+    },
+    {
+      "name": "CCTV10 科教",
+      "group": "央视",
+      "urls": [
+        "http://74.91.26.218:82/live/cctv10hd.m3u8"
+      ],
+      "logo": "https://i.imgur.com/sSSO7UD.png"
+    },
+    {
+      "name": "CCTV11 戏曲",
+      "group": "央视",
+      "urls": [
+        "http://74.91.26.218:82/live/cctv11hd.m3u8"
+      ],
+      "logo": "https://i.imgur.com/CjOWx7L.png"
+    },
+    {
+      "name": "CCTV12 社会与法",
+      "group": "央视",
+      "urls": [
+        "http://74.91.26.218:82/live/cctv12hd.m3u8"
+      ],
+      "logo": "https://i.imgur.com/3yTuiOM.png"
+    },
+    {
+      "name": "CCTV13 新闻",
+      "group": "央视",
+      "urls": [
+        "http://74.91.26.218:82/live/cctv13hd.m3u8"
+      ],
+      "logo": "https://i.imgur.com/6MTar6J.png"
+    },
+    {
+      "name": "CCTV14 少儿",
+      "group": "央视",
+      "urls": [
+        "http://74.91.26.218:82/live/cctv14hd.m3u8"
+      ],
+      "logo": "https://i.imgur.com/c5SXW7i.png"
+    },
+    {
+      "name": "CCTV17 农业农村",
+      "group": "央视",
+      "urls": [
+        "http://107.150.50.82:81/live/cctv17.m3u8"
+      ],
+      "logo": "https://i.imgur.com/jSQURxS.png"
+    }
+  ]
+}

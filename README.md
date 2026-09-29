@@ -1,13 +1,19 @@
 # 我的电视
 
-电视直播软件，安装即可使用
+Android TV 直播播放器。启动时从 `https://awbz.cn/tv/channels.json` 获取频道、台标地址和播放地址；台标与视频由对应远程地址加载。应用不内置频道列表，也不保存频道或台标的磁盘缓存。断网时无法加载频道或播放。
+
+## 频道配置
+
+远程 JSON 使用 `version: 1` 和非空的 `channels` 数组。每个频道包含 `name`、`group`、非空的 `urls` 数组和 `logo`，播放地址和台标地址均为 HTTP 或 HTTPS URL。发布前运行 `python3 scripts/validate_channels.py channels.json`，部署后运行 `python3 scripts/validate_channels.py https://awbz.cn/tv/channels.json` 验证线上内容。单条坏频道会在运行时跳过；全部不可用时应用提示重试或退出。
+
+## 构建与发布
+
+Android APK 仅在 AMD H255 远程设备的 Docker 环境构建。将源码同步到 `/tmp/my-tv-d65ac508` 后，在该目录执行 `./build-android-docker.sh assembleDebug`，产物为 `app/build/outputs/apk/debug/app-debug.apk`。发布版也应在该环境构建、签名并完成电视设备播放验收后手动发布。GitHub Actions 目前只校验频道配置，不自动构建或发布 APK。
 
 ## 使用
 
-1. 下载
-    * [github](https://github.com/lizongying/my-tv/releases/)
-    * [gitee](https://gitee.com/lizongying/my-tv/releases/)
-2. 安裝
+1. 在 H255 构建 APK，并在电视设备上验证频道加载、播放与换台。
+2. 安装
     * U盘安装
     * 小米电视可以使用小米电视助手进行安装
     * 如电视可以启用ADB，也可以通过ADB进行安装

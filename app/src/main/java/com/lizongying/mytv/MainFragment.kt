@@ -2,9 +2,7 @@ package com.lizongying.mytv
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.app.AlertDialog
 import android.widget.Toast
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
@@ -18,22 +16,18 @@ import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.Row
 import androidx.leanback.widget.RowPresenter
 import androidx.lifecycle.lifecycleScope
-import com.lizongying.mytv.api.YSP
-import com.lizongying.mytv.models.ProgramType
-import com.lizongying.mytv.models.TVListViewModel
 import com.lizongying.mytv.models.TVViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainFragment : BrowseSupportFragment() {
 
     private var itemPosition = 0
+    private var loadingErrorDialog: AlertDialog? = null
 
-    private var rowsAdapter: ArrayObjectAdapter? = null
-
-    var tvListViewModel = TVListViewModel()
-
-    private var lastVideoUrl = ""
+    private val tvViewModels = mutableListOf<TVViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
@@ -41,167 +35,84 @@ class MainFragment : BrowseSupportFragment() {
         headersState = HEADERS_DISABLED
     }
 
-//    override fun onCreateView(
-//        inflater: LayoutInflater,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View? {
-//        val rootView = super.onCreateView(inflater, container, savedInstanceState)
-//        rootView?.setOnClickListener {
-//            Log.i(TAG, "main on click")
-//            fragmentManager!!.beginTransaction().hide(this).commit()
-//        }
-//        mainFragment.view?.setOnClickListener {
-//            Log.i(TAG, "mainFragment on click")
-//            fragmentManager!!.beginTransaction().hide(this).commit()
-//        }
-//        getRowsSupportFragment().view?.setOnClickListener {
-//            Log.i(TAG, "getRowsSupportFragment on click")
-//            fragmentManager!!.beginTransaction().hide(this).commit()
-//        }
-//
-//
-//        return rootView
-//    }
-
-    override fun onStart() {
-        Log.i(TAG, "onStart")
-        super.onStart()
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        activity?.let { YSP.init(it) }
-
-        loadRows()
-
         setupEventListeners()
 
-        tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
-            tvViewModel.errInfo.observe(viewLifecycleOwner) { _ ->
-                if (tvViewModel.errInfo.value != null
-                    && tvViewModel.getTV().id == itemPosition
-                ) {
-                    Toast.makeText(context, tvViewModel.errInfo.value, Toast.LENGTH_SHORT).show()
-                }
-            }
-            tvViewModel.ready.observe(viewLifecycleOwner) { _ ->
+        loadChannels()
+    }
 
-                // not first time && channel not change
-                if (tvViewModel.ready.value != null
-                    && tvViewModel.getTV().id == itemPosition
-                    && check(tvViewModel)
-                ) {
-                    Log.i(TAG, "ready ${tvViewModel.getTV().title}")
-                    (activity as? MainActivity)?.play(tvViewModel)
-                }
-            }
-            tvViewModel.change.observe(viewLifecycleOwner) { _ ->
-                if (tvViewModel.change.value != null) {
-                    val title = tvViewModel.getTV().title
-                    Log.i(TAG, "switch $title")
-                    if (tvViewModel.getTV().pid != "") {
-                        Log.i(TAG, "request $title")
-                        lifecycleScope.launch(Dispatchers.IO) {
-                            tvViewModel.let { Request.fetchData(it) }
+    private fun loadChannels() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val channels = try {
+                withContext(Dispatchers.IO) { ChannelDataRepository.loadChannels() }
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Unable to load channels", e)
+                if (isAdded) {
+                    loadingErrorDialog = AlertDialog.Builder(requireContext())
+                        .setMessage("频道列表加载失败，请检查网络后重试")
+                        .setPositiveButton("重试") { _, _ ->
+                            loadingErrorDialog = null
+                            loadChannels()
                         }
-                        (activity as? MainActivity)?.showInfoFragment(tvViewModel)
-                        setSelectedPosition(
-                            tvViewModel.getRowPosition(), true,
-                            SelectItemViewHolderTask(tvViewModel.getItemPosition())
-                        )
-                    } else {
-                        if (check(tvViewModel)) {
-                            (activity as? MainActivity)?.play(tvViewModel)
-                            (activity as? MainActivity)?.showInfoFragment(tvViewModel)
-                            setSelectedPosition(
-                                tvViewModel.getRowPosition(), true,
-                                SelectItemViewHolderTask(tvViewModel.getItemPosition())
-                            )
-                        }
-                    }
+                        .setNegativeButton("退出") { _, _ -> activity?.finish() }
+                        .setCancelable(false)
+                        .show()
                 }
+                return@launch
             }
+            loadRows(channels)
+            (activity as MainActivity).fragmentReady("MainFragment")
         }
-
-        (activity as MainActivity).fragmentReady("MainFragment")
     }
 
-    fun toLastPosition() {
+    private fun playChannel(tvViewModel: TVViewModel) {
+        tvViewModel.resetSource()
+        SP.selectedChannel = channelKey(tvViewModel.getTV())
+        Log.i(TAG, "switch ${tvViewModel.getTV().title}")
+        (activity as? MainActivity)?.showChannelSwitching()
+        (activity as? MainActivity)?.play(tvViewModel)
+        (activity as? MainActivity)?.showInfoFragment(tvViewModel)
         setSelectedPosition(
-            selectedPosition, false,
-            SelectItemViewHolderTask(tvListViewModel.maxNum[selectedPosition] - 1)
-        )
-    }
-
-    fun toFirstPosition() {
-        setSelectedPosition(
-            selectedPosition, false,
-            SelectItemViewHolderTask(0)
+            tvViewModel.getRowPosition(), true,
+            SelectItemViewHolderTask(tvViewModel.getItemPosition())
         )
     }
 
     override fun startHeadersTransition(withHeaders: Boolean) {
     }
 
-    private fun loadRows() {
-        rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+    private fun loadRows(channels: Map<String, List<TV>>) {
+        val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
+        tvViewModels.clear()
 
-        val cardPresenter = CardPresenter(context!!)
+        val cardPresenter = CardPresenter()
 
         var idx: Long = 0
-        for ((k, v) in TVList.list) {
+        for ((k, v) in channels) {
             val listRowAdapter = ArrayObjectAdapter(cardPresenter)
             for ((idx2, v1) in v.withIndex()) {
                 val tvViewModel = TVViewModel(v1)
                 tvViewModel.setRowPosition(idx.toInt())
                 tvViewModel.setItemPosition(idx2)
-                tvListViewModel.addTVViewModel(tvViewModel)
+                tvViewModels.add(tvViewModel)
                 listRowAdapter.add(tvViewModel)
             }
-            tvListViewModel.maxNum.add(v.size)
             val header = HeaderItem(idx, k)
-            rowsAdapter!!.add(ListRow(header, listRowAdapter))
+            rowsAdapter.add(ListRow(header, listRowAdapter))
             idx++
         }
 
         adapter = rowsAdapter
 
-        itemPosition = SP.itemPosition
-        if (itemPosition >= tvListViewModel.size()) {
+        itemPosition = tvViewModels.indexOfFirst {
+            channelKey(it.getTV()) == SP.selectedChannel
+        }.takeIf { it >= 0 } ?: SP.itemPosition
+        if (itemPosition !in tvViewModels.indices) {
             itemPosition = 0
-        }
-        tvListViewModel.setItemPosition(itemPosition)
-    }
-
-    fun prevSource() {
-        view?.post {
-            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-            if (tvViewModel != null) {
-                if (tvViewModel.videoUrl.value!!.size > 1) {
-                    val videoIndex = tvViewModel.videoIndex.value?.minus(1)
-                    if (videoIndex == -1) {
-                        tvViewModel.setVideoIndex(tvViewModel.videoUrl.value!!.size - 1)
-                    }
-                    tvViewModel.changed()
-                }
-            }
-        }
-    }
-
-    fun nextSource() {
-        view?.post {
-            val tvViewModel = tvListViewModel.getTVViewModel(itemPosition)
-            if (tvViewModel != null) {
-                if (tvViewModel.videoUrl.value!!.size > 1) {
-                    val videoIndex = tvViewModel.videoIndex.value?.plus(1)
-                    if (videoIndex == tvViewModel.videoUrl.value!!.size) {
-                        tvViewModel.setVideoIndex(0)
-                    }
-                    tvViewModel.changed()
-                }
-            }
         }
     }
 
@@ -218,11 +129,8 @@ class MainFragment : BrowseSupportFragment() {
             row: Row
         ) {
             if (item is TVViewModel) {
-                if (itemPosition != item.getTV().id) {
-                    itemPosition = item.getTV().id
-                    tvListViewModel.setItemPosition(itemPosition)
-                    tvListViewModel.getTVViewModel(itemPosition)?.changed()
-                }
+                itemPosition = item.getTV().id
+                playChannel(item)
                 (activity as? MainActivity)?.switchMainFragment()
             }
         }
@@ -234,42 +142,20 @@ class MainFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder, row: Row
         ) {
             if (item is TVViewModel) {
-                tvListViewModel.setItemPositionCurrent(item.getTV().id)
                 (activity as MainActivity).mainActive()
             }
         }
     }
 
-    fun check(tvViewModel: TVViewModel): Boolean {
-        val title = tvViewModel.getTV().title
-        val videoUrl = tvViewModel.videoIndex.value?.let { tvViewModel.videoUrl.value?.get(it) }
-        if (videoUrl == null || videoUrl == "") {
-            Log.e(TAG, "$title videoUrl is empty")
-            return false
-        }
-
-        if (videoUrl == lastVideoUrl) {
-            Log.e(TAG, "$title videoUrl is duplication")
-            return false
-        }
-
-        return true
-    }
-
     fun fragmentReady() {
-        tvListViewModel.getTVViewModel(itemPosition)?.changed()
-
-        tvListViewModel.tvListViewModel.value?.forEach { tvViewModel ->
-            updateEPG(tvViewModel)
-        }
+        tvViewModels.getOrNull(itemPosition)?.let(::playChannel)
     }
 
     fun play(itemPosition: Int) {
         view?.post {
-            if (itemPosition > -1 && itemPosition < tvListViewModel.size()) {
+            if (itemPosition in tvViewModels.indices) {
                 this.itemPosition = itemPosition
-                tvListViewModel.setItemPosition(itemPosition)
-                tvListViewModel.getTVViewModel(itemPosition)?.changed()
+                playChannel(tvViewModels[itemPosition])
             } else {
                 Toast.makeText(context, "频道不存在", Toast.LENGTH_SHORT).show()
             }
@@ -278,39 +164,17 @@ class MainFragment : BrowseSupportFragment() {
 
     fun prev() {
         view?.post {
-            itemPosition--
-            if (itemPosition == -1) {
-                itemPosition = tvListViewModel.size() - 1
-            }
-            tvListViewModel.setItemPosition(itemPosition)
-            tvListViewModel.getTVViewModel(itemPosition)?.changed()
+            if (tvViewModels.isEmpty()) return@post
+            itemPosition = (itemPosition - 1 + tvViewModels.size) % tvViewModels.size
+            playChannel(tvViewModels[itemPosition])
         }
     }
 
     fun next() {
         view?.post {
-            itemPosition++
-            if (itemPosition == tvListViewModel.size()) {
-                itemPosition = 0
-            }
-            tvListViewModel.setItemPosition(itemPosition)
-            tvListViewModel.getTVViewModel(itemPosition)?.changed()
-        }
-    }
-
-    private fun updateEPG(tvViewModel: TVViewModel) {
-        when (tvViewModel.getTV().programType) {
-            ProgramType.Y_PROTO -> {
-                Request.fetchYProtoEPG(tvViewModel)
-            }
-
-            ProgramType.Y_JCE -> {
-                Request.fetchYJceEPG(tvViewModel)
-            }
-
-            ProgramType.F -> {
-                Request.fetchFEPG(tvViewModel)
-            }
+            if (tvViewModels.isEmpty()) return@post
+            itemPosition = (itemPosition + 1) % tvViewModels.size
+            playChannel(tvViewModels[itemPosition])
         }
     }
 
@@ -325,6 +189,15 @@ class MainFragment : BrowseSupportFragment() {
         SP.itemPosition = itemPosition
         Log.i(TAG, "$POSITION $itemPosition saved")
     }
+
+    override fun onDestroyView() {
+        (activity as? MainActivity)?.fragmentUnavailable("MainFragment")
+        loadingErrorDialog?.dismiss()
+        loadingErrorDialog = null
+        super.onDestroyView()
+    }
+
+    private fun channelKey(tv: TV): String = "${tv.channel.length}:${tv.channel}${tv.title}"
 
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
