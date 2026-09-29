@@ -21,8 +21,6 @@ class MainActivity : FragmentActivity() {
     private lateinit var playerFragment: PlayerFragment
     private lateinit var mainFragment: MainFragment
     private lateinit var infoFragment: InfoFragment
-    private lateinit var channelFragment: ChannelFragment
-    private lateinit var timeFragment: TimeFragment
     private lateinit var settingFragment: SettingFragment
 
     private var doubleBackToExitPressedOnce = false
@@ -41,8 +39,6 @@ class MainActivity : FragmentActivity() {
         playerFragment = restored.filterIsInstance<PlayerFragment>().firstOrNull() ?: PlayerFragment()
         mainFragment = restored.filterIsInstance<MainFragment>().firstOrNull() ?: MainFragment()
         infoFragment = restored.filterIsInstance<InfoFragment>().firstOrNull() ?: InfoFragment()
-        channelFragment = restored.filterIsInstance<ChannelFragment>().firstOrNull() ?: ChannelFragment()
-        timeFragment = restored.filterIsInstance<TimeFragment>().firstOrNull() ?: TimeFragment()
         settingFragment = restored.filterIsInstance<SettingFragment>().firstOrNull() ?: SettingFragment()
 
         setContentView(R.layout.activity_main)
@@ -54,9 +50,7 @@ class MainActivity : FragmentActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
                 .add(R.id.main_browse_fragment, playerFragment)
-                .add(R.id.main_browse_fragment, timeFragment)
                 .add(R.id.main_browse_fragment, infoFragment)
-                .add(R.id.main_browse_fragment, channelFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
                 .hide(mainFragment)
                 .commit()
@@ -67,24 +61,9 @@ class MainActivity : FragmentActivity() {
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
         infoFragment.show(tvViewModel)
-        if (SP.channelNum) {
-            channelFragment.show(tvViewModel)
-        }
     }
 
-    private fun showChannel(channel: String) {
-        if (!mainFragment.isHidden) {
-            return
-        }
-
-        if (settingFragment.isVisible) {
-            return
-        }
-
-        if (SP.channelNum) {
-            channelFragment.show(channel)
-        }
-    }
+    fun reloadChannels() = mainFragment.reloadChannels()
 
     fun play(tvViewModel: TVViewModel) {
         playerFragment.play(tvViewModel)
@@ -93,10 +72,6 @@ class MainActivity : FragmentActivity() {
 
     fun showChannelSwitching() {
         playerFragment.showSwitching()
-    }
-
-    fun play(itemPosition: Int) {
-        mainFragment.play(itemPosition)
     }
 
     fun prev() {
@@ -128,7 +103,6 @@ class MainActivity : FragmentActivity() {
     fun settingDelayHide() {
         handler.removeCallbacks(hideSetting)
         handler.postDelayed(hideSetting, delayHideSetting)
-        showTime()
     }
 
     private val hideMain = Runnable {
@@ -151,22 +125,12 @@ class MainActivity : FragmentActivity() {
         if (readyFragments.containsAll(REQUIRED_FRAGMENTS) && !playbackStarted) {
             playbackStarted = true
             mainFragment.fragmentReady()
-            showTime()
         }
     }
 
     fun fragmentUnavailable(tag: String) {
         readyFragments.remove(tag)
         playbackStarted = false
-    }
-
-    private fun showTime() {
-        Log.i(TAG, "showTime ${SP.time}")
-        if (SP.time) {
-            timeFragment.show()
-        } else {
-            timeFragment.hide()
-        }
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -271,56 +235,6 @@ class MainActivity : FragmentActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         Log.i(TAG, "keyCode $keyCode, event $event")
         when (keyCode) {
-            KeyEvent.KEYCODE_0 -> {
-                showChannel("0")
-                return true
-            }
-
-            KeyEvent.KEYCODE_1 -> {
-                showChannel("1")
-                return true
-            }
-
-            KeyEvent.KEYCODE_2 -> {
-                showChannel("2")
-                return true
-            }
-
-            KeyEvent.KEYCODE_3 -> {
-                showChannel("3")
-                return true
-            }
-
-            KeyEvent.KEYCODE_4 -> {
-                showChannel("4")
-                return true
-            }
-
-            KeyEvent.KEYCODE_5 -> {
-                showChannel("5")
-                return true
-            }
-
-            KeyEvent.KEYCODE_6 -> {
-                showChannel("6")
-                return true
-            }
-
-            KeyEvent.KEYCODE_7 -> {
-                showChannel("7")
-                return true
-            }
-
-            KeyEvent.KEYCODE_8 -> {
-                showChannel("8")
-                return true
-            }
-
-            KeyEvent.KEYCODE_9 -> {
-                showChannel("9")
-                return true
-            }
-
             KeyEvent.KEYCODE_ESCAPE -> {
                 back()
                 return true
@@ -421,7 +335,7 @@ class MainActivity : FragmentActivity() {
     private companion object {
         const val TAG = "MainActivity"
         val REQUIRED_FRAGMENTS = setOf(
-            "PlayerFragment", "MainFragment", "InfoFragment", "ChannelFragment", "TimeFragment"
+            "PlayerFragment", "MainFragment", "InfoFragment"
         )
     }
 }

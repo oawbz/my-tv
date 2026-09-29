@@ -10,13 +10,9 @@ object SP {
     // If Change channel with up and down in reversed order or not
     private const val KEY_CHANNEL_REVERSAL = "channel_reversal"
 
-    // If use channel num to select channel or not
-    private const val KEY_CHANNEL_NUM = "channel_num"
-
-    private const val KEY_TIME = "time"
-
     // If start app on device boot or not
     private const val KEY_BOOT_STARTUP = "boot_startup"
+    private const val KEY_CHANNELS_URL = "channels_url"
 
     // Position in list of the selected channel item
     private const val KEY_POSITION = "position"
@@ -35,17 +31,13 @@ object SP {
         get() = sp.getBoolean(KEY_CHANNEL_REVERSAL, false)
         set(value) = sp.edit().putBoolean(KEY_CHANNEL_REVERSAL, value).apply()
 
-    var channelNum: Boolean
-        get() = sp.getBoolean(KEY_CHANNEL_NUM, true)
-        set(value) = sp.edit().putBoolean(KEY_CHANNEL_NUM, value).apply()
-
-    var time: Boolean
-        get() = sp.getBoolean(KEY_TIME, true)
-        set(value) = sp.edit().putBoolean(KEY_TIME, value).apply()
-
     var bootStartup: Boolean
         get() = sp.getBoolean(KEY_BOOT_STARTUP, false)
         set(value) = sp.edit().putBoolean(KEY_BOOT_STARTUP, value).apply()
+
+    var channelsUrl: String
+        get() = sp.getString(KEY_CHANNELS_URL, "https://awbz.cn/tv/channels.json").orEmpty()
+        set(value) = sp.edit().putString(KEY_CHANNELS_URL, value).apply()
 
     var itemPosition: Int
         get() = sp.getInt(KEY_POSITION, 0)

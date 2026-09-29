@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.fragment.app.DialogFragment
@@ -41,26 +42,23 @@ class SettingFragment : DialogFragment() {
     ): View {
         _binding = SettingBinding.inflate(inflater, container, false)
 
+        binding.channelsUrl.setText(SP.channelsUrl)
+        binding.saveChannelsUrl.setOnClickListener {
+            val url = binding.channelsUrl.text.toString().trim()
+            if (url.isBlank()) {
+                Toast.makeText(context, "请输入频道列表地址", Toast.LENGTH_SHORT).show()
+            } else {
+                SP.channelsUrl = url
+                (activity as? MainActivity)?.reloadChannels()
+                Toast.makeText(context, "已保存，正在重新加载频道", Toast.LENGTH_SHORT).show()
+                (activity as? MainActivity)?.settingDelayHide()
+            }
+        }
+
         binding.switchChannelReversal.run {
             isChecked = SP.channelReversal
             setOnCheckedChangeListener { _, isChecked ->
                 SP.channelReversal = isChecked
-                (activity as MainActivity).settingDelayHide()
-            }
-        }
-
-        binding.switchChannelNum.run {
-            isChecked = SP.channelNum
-            setOnCheckedChangeListener { _, isChecked ->
-                SP.channelNum = isChecked
-                (activity as MainActivity).settingDelayHide()
-            }
-        }
-
-        binding.switchTime.run {
-            isChecked = SP.time
-            setOnCheckedChangeListener { _, isChecked ->
-                SP.time = isChecked
                 (activity as MainActivity).settingDelayHide()
             }
         }

@@ -3,7 +3,6 @@ package com.lizongying.mytv
 import android.os.Bundle
 import android.util.Log
 import android.app.AlertDialog
-import android.widget.Toast
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.HeaderItem
@@ -26,6 +25,7 @@ class MainFragment : BrowseSupportFragment() {
 
     private var itemPosition = 0
     private var loadingErrorDialog: AlertDialog? = null
+    private var reloadInProgress = false
 
     private val tvViewModels = mutableListOf<TVViewModel>()
 
@@ -40,6 +40,13 @@ class MainFragment : BrowseSupportFragment() {
 
         setupEventListeners()
 
+        loadChannels()
+    }
+
+    fun reloadChannels() {
+        reloadInProgress = true
+        loadingErrorDialog?.dismiss()
+        loadingErrorDialog = null
         loadChannels()
     }
 
@@ -65,6 +72,10 @@ class MainFragment : BrowseSupportFragment() {
                 return@launch
             }
             loadRows(channels)
+            if (reloadInProgress) {
+                reloadInProgress = false
+                tvViewModels.getOrNull(itemPosition)?.let(::playChannel)
+            }
             (activity as MainActivity).fragmentReady("MainFragment")
         }
     }
@@ -129,7 +140,7 @@ class MainFragment : BrowseSupportFragment() {
             row: Row
         ) {
             if (item is TVViewModel) {
-                itemPosition = item.getTV().id
+                itemPosition = tvViewModels.indexOf(item)
                 playChannel(item)
                 (activity as? MainActivity)?.switchMainFragment()
             }
@@ -149,17 +160,6 @@ class MainFragment : BrowseSupportFragment() {
 
     fun fragmentReady() {
         tvViewModels.getOrNull(itemPosition)?.let(::playChannel)
-    }
-
-    fun play(itemPosition: Int) {
-        view?.post {
-            if (itemPosition in tvViewModels.indices) {
-                this.itemPosition = itemPosition
-                playChannel(tvViewModels[itemPosition])
-            } else {
-                Toast.makeText(context, "频道不存在", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     fun prev() {

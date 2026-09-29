@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit
 
 object ChannelDataRepository {
     private const val TAG = "ChannelDataRepository"
-    private const val CHANNELS_URL = "https://awbz.cn/tv/channels.json"
     private const val TIMEOUT_SECONDS = 5L
     private const val MAX_CONFIG_BYTES = 1024 * 1024
 
@@ -23,14 +22,15 @@ object ChannelDataRepository {
         .callTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .build()
 
-    fun loadChannels(): Map<String, List<TV>> {
-        val channels = parseChannels(fetchRemoteJson())
+    fun loadChannels(url: String = SP.channelsUrl): Map<String, List<TV>> {
+        val channels = parseChannels(fetchRemoteJson(url))
         Log.i(TAG, "Loaded ${channels.values.sumOf { it.size }} channels from remote JSON")
         return channels
     }
 
-    private fun fetchRemoteJson(): String {
-        val request = Request.Builder().url(CHANNELS_URL).get().build()
+    private fun fetchRemoteJson(url: String): String {
+        if (!isHttpUrl(url)) throw IOException("Channel URL must be a valid HTTP or HTTPS URL")
+        val request = Request.Builder().url(url).get().build()
         client.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw IOException("Channel request failed with HTTP ${response.code}")
@@ -71,7 +71,6 @@ object ChannelDataRepository {
         }
 
         val grouped = linkedMapOf<String, MutableList<TV>>()
-        var id = 0
         for (entry in entries) {
             if (entry == null) {
                 Log.w(TAG, "Skipping null channel entry")
@@ -91,7 +90,6 @@ object ChannelDataRepository {
             }
 
             val tv = TV(
-                id = id++,
                 title = name,
                 videoUrl = urls,
                 channel = group,

@@ -36,6 +36,14 @@ class PlayerFragment : Fragment() {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 if (isPlaying) hideSwitching()
             }
+
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                when (playbackState) {
+                    Player.STATE_BUFFERING -> showSwitching()
+                    Player.STATE_READY -> hideSwitching()
+                    Player.STATE_IDLE -> hideSwitching()
+                }
+            }
         })
         (activity as MainActivity).fragmentReady("PlayerFragment")
         return binding.root

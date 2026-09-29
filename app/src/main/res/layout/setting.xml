@@ -26,21 +26,29 @@
             android:layout_marginTop="14dp"
             android:layout_marginBottom="10dp"
             android:background="#40FFFFFF" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="频道列表地址"
+            android:textColor="#FFFFFFFF"
+            android:textSize="14sp" />
+        <EditText
+            android:id="@+id/channels_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:inputType="textUri"
+            android:textColor="#FFFFFFFF"
+            android:textColorHint="#99FFFFFF"
+            android:hint="https://awbz.cn/tv/channels.json" />
+        <Button
+            android:id="@+id/save_channels_url"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="保存并重新加载" />
         <Switch
             android:id="@+id/switch_channel_reversal"
             android:text="@string/title_channel_reversal"
-            android:layout_marginTop="2dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <Switch
-            android:id="@+id/switch_channel_num"
-            android:text="@string/title_channel_num"
-            android:layout_marginTop="2dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <Switch
-            android:id="@+id/switch_time"
-            android:text="@string/title_time"
             android:layout_marginTop="2dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

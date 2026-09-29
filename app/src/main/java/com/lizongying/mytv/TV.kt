@@ -1,7 +1,6 @@
 package com.lizongying.mytv
 
 data class TV(
-    val id: Int,
     val title: String,
     val videoUrl: List<String>,
     val channel: String,

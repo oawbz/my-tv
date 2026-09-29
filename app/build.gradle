@@ -18,14 +18,6 @@ android {
         versionCode VersionCode()
         versionName VersionName()
 
-        multiDexEnabled true
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
     }
 
     compileOptions {
