@@ -4,11 +4,17 @@ import android.net.Uri
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
+import kotlinx.coroutines.suspendCancellableCoroutine
+import okhttp3.Call
+import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 object ChannelDataRepository {
     private const val TAG = "ChannelDataRepository"
@@ -22,37 +28,56 @@ object ChannelDataRepository {
         .callTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
         .build()
 
-    fun loadChannels(url: String = SP.channelsUrl): Map<String, List<TV>> {
+    suspend fun loadChannels(url: String): Map<String, List<TV>> {
         val channels = parseChannels(fetchRemoteJson(url))
         Log.i(TAG, "Loaded ${channels.values.sumOf { it.size }} channels from remote JSON")
         return channels
     }
 
-    private fun fetchRemoteJson(url: String): String {
+    private suspend fun fetchRemoteJson(url: String): String {
         if (!isHttpUrl(url)) throw IOException("Channel URL must be a valid HTTP or HTTPS URL")
         val request = Request.Builder().url(url).get().build()
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) {
-                throw IOException("Channel request failed with HTTP ${response.code}")
-            }
-            val body = response.body ?: throw IOException("Channel response body is empty")
-            if (body.contentLength() > MAX_CONFIG_BYTES) {
-                throw IOException("Channel response is too large")
-            }
-            val output = ByteArrayOutputStream()
-            body.byteStream().use { input ->
-                val buffer = ByteArray(8192)
-                while (true) {
-                    val count = input.read(buffer)
-                    if (count < 0) break
-                    if (output.size() + count > MAX_CONFIG_BYTES) {
-                        throw IOException("Channel response is too large")
-                    }
-                    output.write(buffer, 0, count)
+        return suspendCancellableCoroutine { continuation ->
+            val call = client.newCall(request)
+            continuation.invokeOnCancellation { call.cancel() }
+            call.enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    if (continuation.isActive) continuation.resumeWithException(e)
                 }
-            }
-            return output.toString(Charsets.UTF_8.name())
+
+                override fun onResponse(call: Call, response: Response) {
+                    try {
+                        val json = response.use { readResponse(it) }
+                        if (continuation.isActive) continuation.resume(json)
+                    } catch (e: Exception) {
+                        if (continuation.isActive) continuation.resumeWithException(e)
+                    }
+                }
+            })
         }
+    }
+
+    private fun readResponse(response: Response): String {
+        if (!response.isSuccessful) {
+            throw IOException("Channel request failed with HTTP ${response.code}")
+        }
+        val body = response.body ?: throw IOException("Channel response body is empty")
+        if (body.contentLength() > MAX_CONFIG_BYTES) {
+            throw IOException("Channel response is too large")
+        }
+        val output = ByteArrayOutputStream()
+        body.byteStream().use { input ->
+            val buffer = ByteArray(8192)
+            while (true) {
+                val count = input.read(buffer)
+                if (count < 0) break
+                if (output.size() + count > MAX_CONFIG_BYTES) {
+                    throw IOException("Channel response is too large")
+                }
+                output.write(buffer, 0, count)
+            }
+        }
+        return output.toString(Charsets.UTF_8.name())
     }
 
     private fun parseChannels(json: String): Map<String, List<TV>> {

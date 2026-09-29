@@ -7,10 +7,13 @@ import android.util.Log
 import android.view.GestureDetector
 import android.view.KeyEvent
 import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
+import androidx.leanback.widget.ImageCardView
 import com.lizongying.mytv.models.TVViewModel
 
 
@@ -63,7 +66,12 @@ class MainActivity : FragmentActivity() {
         infoFragment.show(tvViewModel)
     }
 
-    fun reloadChannels() = mainFragment.reloadChannels()
+    fun reloadChannels(url: String, onResult: (Boolean) -> Unit) =
+        mainFragment.reloadChannels(url, onResult)
+
+    fun settingHoldOpen() {
+        handler.removeCallbacks(hideSetting)
+    }
 
     fun play(tvViewModel: TVViewModel) {
         playerFragment.play(tvViewModel)
@@ -89,7 +97,8 @@ class MainActivity : FragmentActivity() {
             transaction.show(mainFragment)
             mainActive()
         } else {
-            transaction.hide(mainFragment)
+            hideMainFragment()
+            return
         }
 
         transaction.commit()
@@ -113,6 +122,7 @@ class MainActivity : FragmentActivity() {
 
     private fun hideMainFragment() {
         if (!mainFragment.isHidden) {
+            handler.removeCallbacks(hideMain)
             supportFragmentManager.beginTransaction()
                 .hide(mainFragment)
                 .commit()
@@ -133,17 +143,19 @@ class MainActivity : FragmentActivity() {
         playbackStarted = false
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        if (event != null) {
-            gestureDetector.onTouchEvent(event)
-        }
-        return super.onTouchEvent(event)
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        gestureDetector.onTouchEvent(event)
+        return super.dispatchTouchEvent(event)
     }
 
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
 
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            switchMainFragment()
+            if (mainFragment.isHidden) {
+                switchMainFragment()
+            } else if (!isPointOnChannelCard(mainFragment.view, e.rawX, e.rawY)) {
+                hideMainFragment()
+            }
             return true
         }
 
@@ -170,6 +182,22 @@ class MainActivity : FragmentActivity() {
             }
             return super.onFling(e1, e2, velocityX, velocityY)
         }
+    }
+
+    private fun isPointOnChannelCard(view: View?, rawX: Float, rawY: Float): Boolean {
+        if (view == null || view.visibility != View.VISIBLE) return false
+
+        if (view is ImageCardView) {
+            val bounds = android.graphics.Rect()
+            return view.getGlobalVisibleRect(bounds) && bounds.contains(rawX.toInt(), rawY.toInt())
+        }
+
+        if (view is ViewGroup) {
+            for (index in 0 until view.childCount) {
+                if (isPointOnChannelCard(view.getChildAt(index), rawX, rawY)) return true
+            }
+        }
+        return false
     }
 
     private fun showSetting() {

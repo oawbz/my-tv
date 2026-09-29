@@ -1,8 +1,8 @@
 package com.lizongying.mytv
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 
-class MyApplication : Application() {
+class MyApplication : MultiDexApplication() {
     override fun onCreate() {
         super.onCreate()
         SP.init(this)

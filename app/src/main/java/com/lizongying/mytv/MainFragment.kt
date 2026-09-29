@@ -18,6 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.models.TVViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -25,7 +26,8 @@ class MainFragment : BrowseSupportFragment() {
 
     private var itemPosition = 0
     private var loadingErrorDialog: AlertDialog? = null
-    private var reloadInProgress = false
+    private var loadJob: Job? = null
+    private var loadGeneration = 0L
 
     private val tvViewModels = mutableListOf<TVViewModel>()
 
@@ -43,22 +45,29 @@ class MainFragment : BrowseSupportFragment() {
         loadChannels()
     }
 
-    fun reloadChannels() {
-        reloadInProgress = true
+    fun reloadChannels(url: String, onResult: (Boolean) -> Unit) {
         loadingErrorDialog?.dismiss()
         loadingErrorDialog = null
-        loadChannels()
+        loadChannels(url, onResult)
     }
 
-    private fun loadChannels() {
-        viewLifecycleOwner.lifecycleScope.launch {
+    private fun loadChannels(
+        url: String = SP.channelsUrl,
+        onResult: ((Boolean) -> Unit)? = null,
+    ) {
+        loadJob?.cancel()
+        val generation = ++loadGeneration
+        loadJob = viewLifecycleOwner.lifecycleScope.launch {
             val channels = try {
-                withContext(Dispatchers.IO) { ChannelDataRepository.loadChannels() }
+                withContext(Dispatchers.IO) { ChannelDataRepository.loadChannels(url) }
             } catch (e: CancellationException) {
                 throw e
             } catch (e: Exception) {
+                if (generation != loadGeneration) return@launch
                 Log.e(TAG, "Unable to load channels", e)
-                if (isAdded) {
+                if (onResult != null) {
+                    onResult(false)
+                } else if (isAdded) {
                     loadingErrorDialog = AlertDialog.Builder(requireContext())
                         .setMessage("频道列表加载失败，请检查网络后重试")
                         .setPositiveButton("重试") { _, _ ->
@@ -71,12 +80,15 @@ class MainFragment : BrowseSupportFragment() {
                 }
                 return@launch
             }
+            if (generation != loadGeneration) return@launch
+            val hadChannels = tvViewModels.isNotEmpty()
             loadRows(channels)
-            if (reloadInProgress) {
-                reloadInProgress = false
+            if (onResult != null) SP.channelsUrl = url
+            (activity as MainActivity).fragmentReady("MainFragment")
+            if (onResult != null && hadChannels) {
                 tvViewModels.getOrNull(itemPosition)?.let(::playChannel)
             }
-            (activity as MainActivity).fragmentReady("MainFragment")
+            onResult?.invoke(true)
         }
     }
 
@@ -191,6 +203,9 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     override fun onDestroyView() {
+        loadGeneration++
+        loadJob?.cancel()
+        loadJob = null
         (activity as? MainActivity)?.fragmentUnavailable("MainFragment")
         loadingErrorDialog?.dismiss()
         loadingErrorDialog = null

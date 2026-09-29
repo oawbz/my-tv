@@ -48,10 +48,19 @@ class SettingFragment : DialogFragment() {
             if (url.isBlank()) {
                 Toast.makeText(context, "请输入频道列表地址", Toast.LENGTH_SHORT).show()
             } else {
-                SP.channelsUrl = url
-                (activity as? MainActivity)?.reloadChannels()
-                Toast.makeText(context, "已保存，正在重新加载频道", Toast.LENGTH_SHORT).show()
-                (activity as? MainActivity)?.settingDelayHide()
+                (activity as? MainActivity)?.apply {
+                    settingHoldOpen()
+                    reloadChannels(url) { success ->
+                        this@SettingFragment.context?.let {
+                            Toast.makeText(
+                                it,
+                                if (success) "频道已更新" else "加载失败，原地址未变",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        if (success) settingDelayHide()
+                    }
+                }
             }
         }
 
