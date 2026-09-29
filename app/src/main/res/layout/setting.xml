@@ -53,6 +53,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         <Switch
+            android:id="@+id/switch_channel_number_input"
+            android:text="启用数字键盘"
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Switch
             android:id="@+id/switch_boot_startup"
             android:text="@string/title_boot_startup"
             android:layout_marginTop="2dp"

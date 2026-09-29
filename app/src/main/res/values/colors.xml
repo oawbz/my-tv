@@ -4,4 +4,7 @@
     <color name="black">#000</color>
     <color name="white">#FFF</color>
     <color name="ic_launcher_background">#223239</color>
+    <color name="channel_logo_background">#2B3A40</color>
+    <color name="channel_text_background">#30434B</color>
+    <color name="channel_text_color">#F5F5F5</color>
 </resources>

@@ -1,11 +1,12 @@
 package com.lizongying.mytv
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
@@ -18,6 +19,10 @@ class PlayerFragment : Fragment() {
     private var _binding: PlayerBinding? = null
     private var player: ExoPlayer? = null
     private var channel: TVViewModel? = null
+    private val channelNumberHandler = Handler(Looper.getMainLooper())
+    private val hideChannelNumber = Runnable {
+        _binding?.channelNumberOverlay?.visibility = View.GONE
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -40,7 +45,10 @@ class PlayerFragment : Fragment() {
             override fun onPlaybackStateChanged(playbackState: Int) {
                 when (playbackState) {
                     Player.STATE_BUFFERING -> showSwitching()
-                    Player.STATE_READY -> hideSwitching()
+                    Player.STATE_READY -> {
+                        hideSwitching()
+                        hidePlaybackError()
+                    }
                     Player.STATE_IDLE -> hideSwitching()
                 }
             }
@@ -51,6 +59,7 @@ class PlayerFragment : Fragment() {
 
     fun play(tvViewModel: TVViewModel) {
         channel = tvViewModel
+        hidePlaybackError()
         player?.apply {
             setMediaItem(MediaItem.fromUri(tvViewModel.getVideoUrlCurrent()))
             prepare()
@@ -60,6 +69,27 @@ class PlayerFragment : Fragment() {
 
     fun showSwitching() {
         _binding?.switchingOverlay?.visibility = View.VISIBLE
+    }
+
+    fun showChannelNumber(number: String, hideAfterMillis: Long? = null) {
+        val overlay = _binding?.channelNumberOverlay ?: return
+        channelNumberHandler.removeCallbacks(hideChannelNumber)
+        overlay.text = number
+        overlay.visibility = View.VISIBLE
+        hideAfterMillis?.let { channelNumberHandler.postDelayed(hideChannelNumber, it) }
+    }
+
+    fun hideChannelNumber() {
+        channelNumberHandler.removeCallbacks(hideChannelNumber)
+        _binding?.channelNumberOverlay?.visibility = View.GONE
+    }
+
+    private fun showPlaybackError() {
+        _binding?.playbackErrorOverlay?.visibility = View.VISIBLE
+    }
+
+    private fun hidePlaybackError() {
+        _binding?.playbackErrorOverlay?.visibility = View.GONE
     }
 
     private fun hideSwitching() {
@@ -73,7 +103,7 @@ class PlayerFragment : Fragment() {
             play(current)
         } else {
             hideSwitching()
-            Toast.makeText(context, "播放失败，请切换频道", Toast.LENGTH_SHORT).show()
+            showPlaybackError()
         }
     }
 
@@ -88,6 +118,7 @@ class PlayerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        channelNumberHandler.removeCallbacks(hideChannelNumber)
         (activity as? MainActivity)?.fragmentUnavailable("PlayerFragment")
         _binding?.playerView?.player = null
         player?.release()

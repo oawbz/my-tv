@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">我的电视</string>
+    <string name="app_name">电视</string>
     <string name="title_channel_reversal">换台反转</string>
     <string name="title_boot_startup">开机自启</string>
 </resources>

@@ -4,7 +4,25 @@
         <item name="lbImageCardViewType">Title</item>
     </style>
 
+    <style name="CustomImageCardViewTitleTextAppearance" parent="TextAppearance.Leanback.ImageCardView.Title">
+        <item name="android:textColor">@color/channel_text_color</item>
+    </style>
+
+    <style name="CustomImageCardViewContentTextAppearance" parent="TextAppearance.Leanback.ImageCardView.Content">
+        <item name="android:textColor">@color/channel_text_color</item>
+    </style>
+
+    <style name="CustomImageCardViewTitleStyle" parent="Widget.Leanback.ImageCardView.TitleStyle">
+        <item name="android:textAppearance">@style/CustomImageCardViewTitleTextAppearance</item>
+    </style>
+
+    <style name="CustomImageCardViewContentStyle" parent="Widget.Leanback.ImageCardView.ContentStyle">
+        <item name="android:textAppearance">@style/CustomImageCardViewContentTextAppearance</item>
+    </style>
+
     <style name="CustomImageCardTheme" parent="Theme.Leanback">
         <item name="imageCardViewStyle">@style/CustomImageCardViewStyle</item>
+        <item name="imageCardViewTitleStyle">@style/CustomImageCardViewTitleStyle</item>
+        <item name="imageCardViewContentStyle">@style/CustomImageCardViewContentStyle</item>
     </style>
 </resources>

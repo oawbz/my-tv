@@ -72,6 +72,14 @@ class SettingFragment : DialogFragment() {
             }
         }
 
+        binding.switchChannelNumberInput.run {
+            isChecked = SP.channelNumberInput
+            setOnCheckedChangeListener { _, isChecked ->
+                SP.channelNumberInput = isChecked
+                (activity as MainActivity).settingDelayHide()
+            }
+        }
+
         binding.switchBootStartup.run {
             isChecked = SP.bootStartup
             setOnCheckedChangeListener { _, isChecked ->

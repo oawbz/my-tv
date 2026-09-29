@@ -190,6 +190,16 @@ class MainFragment : BrowseSupportFragment() {
         }
     }
 
+    fun selectChannelNumber(number: Int) {
+        view?.post {
+            val index = number - 1
+            if (index !in tvViewModels.indices) return@post
+            itemPosition = index
+            playChannel(tvViewModels[itemPosition])
+            (activity as? MainActivity)?.hideChannelList()
+        }
+    }
+
     override fun onResume() {
         Log.i(TAG, "onResume")
         super.onResume()

@@ -5,105 +5,675 @@
       "name": "CCTV1 综合",
       "group": "央视",
       "urls": [
-        "http://74.91.26.218:82/live/cctv1hd.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/608807420",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/cctv/cctv1hd/1200/index.m3u8?msisdn=80ffeb19d7fbf45c27439290201dfb7e&mdspid=&spid=699004&netType=0&sid=2201057821&pid=2028597139&timestamp=20260929145031&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=608807420&ParentNodeID=-99&assertID=2201057821&client_ip=39.103.182.111&SecurityKey=20260929145031&promotionId=&mvid=2201057821&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=15fc604d3ea663e77b6f189f0f9021c4&ddCalcu=41c5v1fa2cy06a90f40df39e8a16f663be77&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv1.m3u8",
+        "http://59.39.89.130:60901/tsfile/live/0001_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://113.57.140.161:10081/newlive/live/hls/1/live.m3u8",
+        "http://120.48.113.49:6006/608807420",
+        "http://45.192.97.170:8880/play/1.m3u8",
+        "http://f.123.rr.kg/163189/cctv1",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225777/10000100000000060000000000240944_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/TpA3cUl.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/af828afc94a335d9679f.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV2 财经",
       "group": "央视",
       "urls": [
-        "http://74.91.26.218:82/live/cctv2hd.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/631780532",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/cctv/cctv2hd/1500/index.m3u8?msisdn=94019b0e324e4b2e547fca635b25e10d&mdspid=&spid=699004&netType=0&sid=5500346945&pid=2028597139&timestamp=20260929145029&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=631780532&ParentNodeID=-99&assertID=5500346945&client_ip=39.103.182.111&SecurityKey=20260929145029&promotionId=&mvid=5101064231&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=3c2fa8148a34ad956c4ab5a73c3fbf4d&ddCalcu=d34cvf2abfzfaa38c13478aa53b4aa4dc965&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv2.m3u8",
+        "http://120.198.95.220:9901/tsfile/live/1016_1.m3u8?key=txiptv&playlive=1&down=1",
+        "http://bztv.tvbus.cc:8081/cdnlive/cctv2.m3u8",
+        "http://120.48.113.49:6006/631780532",
+        "http://45.192.97.170:8880/play/2.m3u8",
+        "http://f.123.rr.kg/163189/cctv2",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225706/10000100000000060000000000146027_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/ILamhwU.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/c2883c6cf59ac563cf74.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV3 综艺",
       "group": "央视",
       "urls": [
-        "http://74.91.26.218:82/live/cctv3hd.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/624878271",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/2018/ocn/cctv3hd/2000/index.m3u8?msisdn=18b645eaad0935fbb58437434211976a&mdspid=&spid=699004&netType=0&sid=5500212864&pid=2028597139&timestamp=20260929145030&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=624878271&ParentNodeID=-99&assertID=5500212864&client_ip=39.103.188.159&SecurityKey=20260929145030&promotionId=&mvid=5100001683&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=8fe80d1262e0e09447ca271b0867b451&ddCalcu=185fv4eab8a70a6d8102b6127e20aec07944&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv3.m3u8",
+        "http://59.39.89.130:60901/tsfile/live/0003_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://153.0.171.163:9901/tsfile/live/1002_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://120.48.113.49:6006/624878271",
+        "http://45.192.97.170:8880/play/3.m3u8",
+        "http://f.123.rr.kg/163189/cctv3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226008/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/iFlkIuw.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/63b552d7fefc610e8144.webp?v=1790563825345&from=source"
+    },
+    {
+      "name": "CCTV4 中文国际",
+      "group": "央视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/631780421",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/cctv/cctv4hd/1500/index.m3u8?msisdn=b78ccc5be7acb716461a36c869a61829&mdspid=&spid=699004&netType=0&sid=5500346947&pid=2028597139&timestamp=20260929145029&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=631780421&ParentNodeID=-99&assertID=5500346947&client_ip=39.103.188.159&SecurityKey=20260929145029&promotionId=&mvid=5101064235&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=8fa6397673cbe2672faada6f54a41e3d&ddCalcu=d83fveaa16y43aa94756f763acdbaea2f627&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv4.m3u8",
+        "http://59.39.89.130:60901/tsfile/live/0004_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://74.91.26.218:82/live/cctv4hd.m3u8",
+        "http://120.48.113.49:6006/631780421",
+        "http://45.192.97.170:8880/play/4.m3u8",
+        "http://f.123.rr.kg/163189/cctv4",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225779/10000100000000060000000000240942_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/4959e3d542f5b2f8c5fa.webp?v=1790563825345&from=source"
+    },
+    {
+      "name": "CCTV5 体育",
+      "group": "央视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/641886683",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv5.m3u8",
+        "http://153.0.171.163:85/tsfile/live/1015_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://59.39.89.130:60901/tsfile/live/0005_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://120.48.113.49:6006/641886683",
+        "http://45.192.97.170:8880/play/5.m3u8",
+        "http://f.123.rr.kg/163189/cctv5",
+        "http://f.123.rr.kg/163189/cctv5-2",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226024/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/2f90e53607aa4c90838a.webp?v=1790563825345&from=source"
+    },
+    {
+      "name": "CCTV5+ 体育赛事",
+      "group": "央视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/641886773",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv5p.m3u8",
+        "http://59.39.89.130:60901/tsfile/live/0016_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://124.228.160.112:9901/tsfile/live/0016_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://120.48.113.49:6006/641886773",
+        "http://45.192.97.170:8880/play/6.m3u8",
+        "http://f.123.rr.kg/163189/cctv5p",
+        "http://f.123.rr.kg/163189/cctv5p-2",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226171/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/7c56802b27036607cfb5.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV6 电影",
       "group": "央视",
       "urls": [
-        "http://69.30.245.50/live/cctv6.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/624878396",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/2018/ocn/cctv6hd/2000/index.m3u8?msisdn=8a6d4641e4fd2965c21d95cd9fa7b899&mdspid=&spid=699004&netType=0&sid=5500212872&pid=2028597139&timestamp=20260929145031&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=624878396&ParentNodeID=-99&assertID=5500212872&client_ip=39.103.182.111&SecurityKey=20260929145031&promotionId=&mvid=5100001694&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=f74e497d6e7b158e79fad8217808a07d&ddCalcu=df77v04aaeb84a09877d162e87dba1f5987e&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv6.m3u8",
+        "http://8.138.7.223/tv/1905.php?id=LIVE3YPYZ30E7V1R0",
+        "http://222.169.85.8:9901/tsfile/live/0006_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://120.48.113.49:6006/624878396",
+        "http://45.192.97.170:8880/play/7.m3u8",
+        "http://f.123.rr.kg/163189/cctv6",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226011/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/rFiaef7.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/1490e74775b749d55c2a.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV7 国防军事",
       "group": "央视",
       "urls": [
-        "http://74.91.26.218:82/live/cctv7hd.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/673168121",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/20200324/cctv7hd/51/index.m3u8?msisdn=26b230919a3bef32d4124be8c881c42a&mdspid=&spid=699004&netType=0&sid=5501083622&pid=2028597139&timestamp=20260929145031&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=673168121&ParentNodeID=-99&assertID=5501083622&client_ip=39.103.188.159&SecurityKey=20260929145031&promotionId=&mvid=5102910278&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=4985d001cc0ec64c4d6438358cd48418&ddCalcu=8419v48a85d4dad0c0815c3c803e4c66d44c&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv7.m3u8",
+        "http://112.123.243.37:50085/tsfile/live/0008_1.m3u8?key=txiptv&playlive=0&authid=0",
+        "http://120.198.95.220:9901/tsfile/live/1022_1.m3u8?key=txiptv&playlive=1&down=1",
+        "http://120.48.113.49:6006/673168121",
+        "http://45.192.97.170:8880/play/8.m3u8",
+        "http://f.123.rr.kg/163189/cctv7",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225745/10000100000000060000000000146101_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/CKcPMQC.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/2e8b1dd2aaa8e69992d7.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV8 电视剧",
       "group": "央视",
       "urls": [
-        "http://74.91.26.218:82/live/cctv8hd.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/624878356",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/2018/ocn/cctv8hd/2000/index.m3u8?msisdn=fde8b2b98568d4d33c9e5f648a9e7e49&mdspid=&spid=699004&netType=0&sid=5500212868&pid=2028597139&timestamp=20260929145031&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=624878356&ParentNodeID=-99&assertID=5500212868&client_ip=39.103.188.159&SecurityKey=20260929145031&promotionId=&mvid=5100001695&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=76e19d698df364a4ce9313cf58f896d7&ddCalcu=77d6v6ea91b89afd8659f8cd3f133694eac4&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv8.m3u8",
+        "http://59.39.89.130:60901/tsfile/live/0008_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://118.122.144.115:8888/newlive/live/hls/9/live.m3u8",
+        "http://120.48.113.49:6006/624878356",
+        "http://45.192.97.170:8880/play/9.m3u8",
+        "http://f.123.rr.kg/163189/cctv8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226005/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/GyHaZ8X.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/63139c6e2bad35baf7e3.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV9 纪录",
       "group": "央视",
       "urls": [
-        "https://xykt-fix.github.io/Y77.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/673168140",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/20200324/cctv9hd/51/index.m3u8?msisdn=10e34bcaa648d8cb5b1308526acf566f&mdspid=&spid=699004&netType=0&sid=5501083624&pid=2028597139&timestamp=20260929145032&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=673168140&ParentNodeID=-99&assertID=5501083624&client_ip=39.103.182.111&SecurityKey=20260929145032&promotionId=&mvid=5102910384&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=3b6dfd5395e9c850982f693d5c06338c&ddCalcu=c38bv36a3dd6fa0dc553d9359e69fc288590&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv9.m3u8",
+        "http://59.39.89.130:60901/tsfile/live/0009_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://120.198.95.220:9901/tsfile/live/1024_1.m3u8?key=txiptv&playlive=1&down=1",
+        "http://120.48.113.49:6006/673168140",
+        "http://45.192.97.170:8880/play/10.m3u8",
+        "http://f.123.rr.kg/163189/cctv9",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226031/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/3tivvMm.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/f4973c6c1acef549a4c9.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV10 科教",
       "group": "央视",
       "urls": [
-        "http://74.91.26.218:82/live/cctv10hd.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/624878405",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/2018/ocn/cctv10hd/2000/index.m3u8?msisdn=f1f60db4489e82090a537591e02acb4c&mdspid=&spid=699004&netType=0&sid=5500212874&pid=2028597139&timestamp=20260929145033&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=624878405&ParentNodeID=-99&assertID=5500212874&client_ip=39.103.188.159&SecurityKey=20260929145033&promotionId=&mvid=5100001696&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=e046f84ad4dd5ab056aa713098a98e0b&ddCalcu=be00ve4a86y9faa8849a0d341d7da5aa6b50&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv10.m3u8",
+        "http://221.226.51.220:50081/newlive/live/hls/11/live.m3u8",
+        "http://59.39.89.130:60901/tsfile/live/0010_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://120.48.113.49:6006/624878405",
+        "http://45.192.97.170:8880/play/11.m3u8",
+        "http://f.123.rr.kg/163189/cctv10",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225685/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/sSSO7UD.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/3b3f6dc9a89b62ee46d3.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV11 戏曲",
       "group": "央视",
       "urls": [
-        "http://74.91.26.218:82/live/cctv11hd.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/667987558",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/cctv11hd/51/20200103/index.m3u8?msisdn=e6ee1616506b31009a55c2137d92a76d&mdspid=&spid=699004&netType=0&sid=5500988610&pid=2028597139&timestamp=20260929145033&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=667987558&ParentNodeID=-99&assertID=5500988610&client_ip=39.103.182.111&SecurityKey=20260929145033&promotionId=&mvid=5102751362&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=0f43b36fce6e173c44da36ca68c4333d&ddCalcu=d03fv34a33z4bac3866facce663ea1d7434c&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv11.m3u8",
+        "http://118.122.144.115:8888/newlive/live/hls/12/live.m3u8",
+        "http://219.147.245.238:25480/newlive/live/hls/12/live.m3u8",
+        "http://120.48.113.49:6006/667987558",
+        "http://45.192.97.170:8880/play/12.m3u8",
+        "http://f.123.rr.kg/163189/cctv11",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225746/10000100000000060000000000146099_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/CjOWx7L.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/7e048e2ff3b7f45b3fe2.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV12 社会与法",
       "group": "央视",
       "urls": [
-        "http://74.91.26.218:82/live/cctv12hd.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/673168185",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/20200324/cctv12hd/51/index.m3u8?msisdn=649444094cbbcc024f4bcef62d0febf3&mdspid=&spid=699004&netType=0&sid=5501083627&pid=2028597139&timestamp=20260929145033&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=673168185&ParentNodeID=-99&assertID=5501083627&client_ip=39.103.182.111&SecurityKey=20260929145033&promotionId=&mvid=5102910389&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=69bb81de0528899537e3edf8e9bd3e71&ddCalcu=1679veba3bdd8ab19dee80f5d2e838e97935&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv12.m3u8",
+        "http://120.198.95.220:9901/tsfile/live/1027_1.m3u8?key=txiptv&playlive=1&down=1",
+        "http://107.150.60.122/live/cctv12hd.m3u8",
+        "http://120.48.113.49:6006/673168185",
+        "http://45.192.97.170:8880/play/13.m3u8",
+        "http://f.123.rr.kg/163189/cctv12",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225747/10000100000000060000000000146098_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/3yTuiOM.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/cb232ba834085c0ce8d6.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV13 新闻",
       "group": "央视",
       "urls": [
-        "http://74.91.26.218:82/live/cctv13hd.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/608807423",
+        "http://gslbmgsplive.miguvideo.com/envivo_x/2018/SD/cctv13/2000/index.m3u8?msisdn=17ead0d2110694e64fdaff620f438a59&mdspid=&spid=699004&netType=0&sid=2202208864&pid=2028597139&timestamp=20260929145033&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=608807423&ParentNodeID=-99&assertID=2202208864&client_ip=39.103.182.111&SecurityKey=20260929145033&promotionId=&mvid=2202208864&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=d52d88c30befb4876e9fa804faa0f647&ddCalcu=7d45v62afdy08aa8acf3400b8eaffb94e867&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv13.m3u8",
+        "http://59.39.89.130:60901/tsfile/live/0013_1.m3u8?key=txiptv&playlive=1&authid=0",
+        "http://63.141.230.178:82/gslb/zbdq5.m3u8?id=cctv13hd",
+        "http://120.48.113.49:6006/608807423",
+        "http://45.192.97.170:8880/play/14.m3u8",
+        "http://f.123.rr.kg/163189/cctv13",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225748/10000100000000060000000000146097_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/6MTar6J.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/760e683468f52693408c.webp?v=1790563825345&from=source"
     },
     {
       "name": "CCTV14 少儿",
       "group": "央视",
       "urls": [
-        "http://74.91.26.218:82/live/cctv14hd.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/624878440",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/2018/ocn/cctv14hd/2000/index.m3u8?msisdn=985fefccef74fe241d9d9aab8c540670&mdspid=&spid=699004&netType=0&sid=5500212875&pid=2028597139&timestamp=20260929145034&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=624878440&ParentNodeID=-99&assertID=5500212875&client_ip=39.103.188.159&SecurityKey=20260929145034&promotionId=&mvid=5100001697&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=37d6e92b96b67f4b396c31b9284e2818&ddCalcu=8317v8da26yeea49822b99b61b36c76f943b&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv14.m3u8",
+        "http://204.12.221.218:8181/3m1080p/cctv14.m3u8",
+        "http://63.141.230.178:82/gslb/zbdq5.m3u8?id=cctv14hd",
+        "http://120.48.113.49:6006/624878440",
+        "http://45.192.97.170:8880/play/15.m3u8",
+        "http://f.123.rr.kg/163189/cctv14",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225727/10000100000000060000000000146096_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/c5SXW7i.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/03e36021237f54834768.webp?v=1790563825345&from=source"
+    },
+    {
+      "name": "CCTV15 音乐",
+      "group": "央视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/673168223",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/20200324/cctv15hd/51/index.m3u8?msisdn=e0ce72d5bb58b8acf49f91452b852c0a&mdspid=&spid=699004&netType=0&sid=5501083628&pid=2028597139&timestamp=20260929145034&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=673168223&ParentNodeID=-99&assertID=5501083628&client_ip=39.103.188.159&SecurityKey=20260929145034&promotionId=&mvid=5102910391&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=bd4d9d3e4178c093a92b629a6a431de7&ddCalcu=7bedvd4a1da39a4da36ea4912768bc2099a3&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv15.m3u8",
+        "http://120.198.95.220:9901/tsfile/live/1030_1.m3u8?key=txiptv&playlive=1&down=1",
+        "http://63.141.230.178:82/gslb/zbdq5.m3u8?id=cctv15hd",
+        "http://120.48.113.49:6006/673168223",
+        "http://45.192.97.170:8880/play/16.m3u8",
+        "http://f.123.rr.kg/163189/cctv15",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225749/10000100000000060000000000146095_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/4c9cfb9f495331ba5ac5.webp?v=1790563825345&from=source"
+    },
+    {
+      "name": "CCTV16 奥林匹克",
+      "group": "央视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv16.m3u8",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv164k.m3u8",
+        "http://183.129.255.66:8480/hls/17/index.m3u8",
+        "http://58.56.162.102:4466/newlive/live/hls/17/live.m3u8",
+        "http://f.123.rr.kg/163189/cctv16",
+        "http://f.123.rr.kg/163189/cctv16-2",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226356/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/856f4c168a3f679b3d63.png?v=1790563825345&from=source"
     },
     {
       "name": "CCTV17 农业农村",
       "group": "央视",
       "urls": [
-        "http://107.150.50.82:81/live/cctv17.m3u8"
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/673168256",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/20200324/cctv17hd/51/index.m3u8?msisdn=ac919c128b424aa1d53ae76d86ed5a1d&mdspid=&spid=699004&netType=0&sid=5501083631&pid=2028597139&timestamp=20260929145035&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=673168256&ParentNodeID=-99&assertID=5501083631&client_ip=39.103.188.159&SecurityKey=20260929145035&promotionId=&mvid=5102910396&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=7176414954f91284d1e59f99479b5ccd&ddCalcu=d7c1vc7a56ab4a9174499594ff9951e218d4&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cctv17.m3u8",
+        "http://38.75.136.137:98/gslb/dsdqbv/cctv17hd.m3u8?auth=test20251009",
+        "http://63.141.230.178:82/gslb/zbdq5.m3u8?id=cctv17hd",
+        "http://120.48.113.49:6006/673168256",
+        "http://45.192.97.170:8880/play/17.m3u8",
+        "http://f.123.rr.kg/163189/cctv17",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226027/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
       ],
-      "logo": "https://i.imgur.com/jSQURxS.png"
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/4b46c8faffcf6169c8c2.webp?v=1790563825345&from=source"
+    },
+    {
+      "name": "北京卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-bjws.m3u8",
+        "http://120.48.113.49:6006/630287636",
+        "http://45.192.97.170:8880/play/29.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226359/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225754/10000100000000060000000000146022_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/630287636",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/bjws/51/20251127/index.m3u8?msisdn=5c4f951c6bc046388bcb3d786803c3cc&mdspid=&spid=600697&netType=0&sid=5910022306&pid=2028597139&timestamp=20260929145041&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=630287636&ParentNodeID=-99&assertID=5910022306&client_ip=39.103.182.111&SecurityKey=20260929145041&promotionId=&mvid=5101042960&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=c37adaffd7df2a3ddb31f4c66fcb830d&ddCalcu=dc03v37a8awbdacaff6f6dc74dff123ab3dd&sv=10004&ct=android"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/0aeaf0aae8c670a8629e.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "河北卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-hbws2.m3u8",
+        "http://120.48.113.49:6006/962042070",
+        "http://45.192.97.170:8880/play/31.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225713/10000100000000060000000000146045_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/962042070",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/hbws/51/20251225/index.m3u8?msisdn=774ff416b55f68ed0b83424f0de4387b&mdspid=&spid=600725&netType=0&sid=5910022316&pid=2028597139&timestamp=20260929145042&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=962042070&ParentNodeID=-99&assertID=5910022316&client_ip=39.103.182.111&SecurityKey=20260929145042&promotionId=&mvid=5900006782&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=edbdd78d00363b65c78b8d80cfa5df7c&ddCalcu=ce7dvfbaddc5daa7f8cd0080d386b38b76c5&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/hebtv-10524916.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/e3562c142c21014ad83c.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "湖南卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-hnws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226354/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225778/10000100000000060000000000240943_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://hlsal-ldvt.qing.mgtv.com/nn_live/nn_x64/Y2RuZXhfaWQ9YWxfaGxzX2xkdnQmZT02OTE0NjA0JnY9MSZpZD1ITldTWkdTVCZzPTcwN2RiYTc2YzJjNmJmMTQ4MmUyZGYzOWU2NWM3YWFi/HNWSZGST.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/60c1c4eb0e589d2970f0.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "浙江卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-zjws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226331/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225780/10000100000000060000000000240941_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://ali-xwl.cztv.com/live/channel4k2160p.m3u8",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/cztv-101.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/6b4097b43495e6611e67.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "江苏卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-jsws.m3u8",
+        "http://120.48.113.49:6006/623899368",
+        "http://45.192.97.170:8880/play/27.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226357/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225751/10000100000000060000000000146023_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/623899368",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/cctv/jiangsuhd/1200/index.m3u8?msisdn=96126980f235e9831eb8dc6ea4c10585&mdspid=&spid=699067&netType=0&sid=5500199408&pid=2028597139&timestamp=20260929145041&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=623899368&ParentNodeID=-99&assertID=5500199408&client_ip=39.103.182.111&SecurityKey=20260929145041&promotionId=&mvid=5100156802&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=904b1dfabc74c37225c84c2bd4510605&ddCalcu=5900v64a0bb11a5d4fdabb2cc7448cc35722&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/jstv-670.m3u8",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/jstv-676.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/bd212357c7ec7e651875.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "东方卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-dfws.m3u8",
+        "http://120.48.113.49:6006/651632648",
+        "http://45.192.97.170:8880/play/26.m3u8",
+        "http://bp-resource-dfl.bestv.cn/151/3/video.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226374/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225752/10000100000000060000000000146020_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/651632648",
+        "http://gslbmgsplive.miguvideo.com/wd_r4/dfl/dongfangwshd/1200/index.m3u8?msisdn=96126980f235e9831eb8dc6ea4c10585&mdspid=&spid=600697&netType=0&sid=5910022185&pid=2028597139&timestamp=20260929145041&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=651632648&ParentNodeID=-99&assertID=5910022185&client_ip=39.103.188.159&SecurityKey=20260929145041&promotionId=&mvid=5100043384&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=2bc11d6c6a3ee09d69fb6c2c5d9e2bd1&ddCalcu=12dbvbca21we1a9dd65cc62ac36ebef0996d&sv=10004&ct=android",
+        "https://bp-resource-dfl.bestv.cn/148/3/video.m3u8",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/kankanews-1.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/6fc630f60798249ef3c4.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "广东卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-gdws.m3u8",
+        "http://120.48.113.49:6006/608831231",
+        "http://45.192.97.170:8880/play/28.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226362/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225720/10000100000000060000000000146044_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/608831231",
+        "http://gslbmgsplive.miguvideo.com/ws_w/2018/gdws/gdws711/1000/index.m3u8?msisdn=c631aa1f0e6861c45729b06ced8d6642&mdspid=&spid=699054&netType=0&sid=2202428795&pid=2028597139&timestamp=20260929145041&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=608831231&ParentNodeID=-99&assertID=2202428795&client_ip=39.103.188.159&SecurityKey=20260929145041&promotionId=&mvid=2202428795&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=02bf5bc585c812b1e0f42234ad490158&ddCalcu=8052v1ba0fa95a4bdca548352c2841f20be1&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/gdtv-43.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/3b749da8f48801b9f0c8.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "深圳卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-szws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226365/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225712/10000100000000060000000000146093_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/sztv-24725.m3u8",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/sztv-7867.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/c7f6903cb5cedebead12.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "山东卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-sdws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226334/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225728/10000100000000060000000000146021_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/iqilu-sdtv"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/8c7ed13dd0f6c22c5e27.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "安徽卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-ahws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225716/10000100000000060000000000146057_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/anhui-ahwssx.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/69ecbdb0d532b6856d10.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "河南卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-henanws.m3u8",
+        "http://120.48.113.49:6006/790187291",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225709/10000100000000060000000000146051_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/790187291",
+        "http://gslbmgsplive.miguvideo.com/wd-henanwssd-600/index.m3u8?msisdn=86e9cae537d3ad29901015ac9c2339fe&mdspid=&spid=600633&netType=0&sid=5910021585&pid=2028597139&timestamp=20260929145042&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=790187291&ParentNodeID=-99&assertID=5910021585&client_ip=39.103.188.159&SecurityKey=20260929145042&promotionId=&mvid=5900005706&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=d4f43fc732f541a4751d675d7d710637&ddCalcu=7d34v6fa04a13a7fdc77d3527f65d4115a74&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/hntv-145"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/275fce999e011a2ecc11.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "湖北卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-hbws.m3u8",
+        "http://120.48.113.49:6006/947472496",
+        "http://45.192.97.170:8880/play/34.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225708/10000100000000060000000000146056_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/947472496",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/2018/ocn/hubeiwshd/2000/index.m3u8?msisdn=4f1a2423c5d9c86d4746848f8e268b1d&mdspid=&spid=600633&netType=0&sid=5910022163&pid=2028597139&timestamp=20260929145044&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=947472496&ParentNodeID=-99&assertID=5910022163&client_ip=39.103.188.159&SecurityKey=20260929145044&promotionId=&mvid=5900004355&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=2ac72e42772524e90184939934c80a00&ddCalcu=020avaca07y82ace44329797329542841e09&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/hbtv-431.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/464d6ae0e03b0f806628.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "四川卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-scws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226377/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225757/10000100000000060000000000146048_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/361fc947ad4ce7c4a8fc.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "重庆卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-cqws.m3u8",
+        "http://120.48.113.49:6006/738910914",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225686/10000100000000060000000000146019_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/738910914",
+        "http://gslbmgsplive.miguvideo.com/envivo_x/2018/SD/chongqing/1000/index.m3u8?msisdn=095db4d5096e23b8fa8de64e5580e23b&mdspid=&spid=600697&netType=0&sid=5910022305&pid=2028597139&timestamp=20260929145049&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=738910914&ParentNodeID=-99&assertID=5910022305&client_ip=39.103.182.111&SecurityKey=20260929145049&promotionId=&mvid=5900004329&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=1173a15000d0e1ffc0719269698f846e&ddCalcu=e161v47a83lfaa81956090602d901e710fcf&sv=10004&ct=android"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/fc67cbc0b1a70ddd46c7.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "辽宁卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-lnws.m3u8",
+        "http://120.48.113.49:6006/630291707",
+        "http://45.192.97.170:8880/play/30.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225717/10000100000000060000000000146054_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/630291707",
+        "http://gslbmgsplive.miguvideo.com/wd_r2/2018/ocn/liaoningwshd/2000/index.m3u8?msisdn=89dd3224818040218931ba1135aa3e98&mdspid=&spid=600572&netType=0&sid=5910022198&pid=2028597139&timestamp=20260929145041&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=630291707&ParentNodeID=-99&assertID=5910022198&client_ip=39.103.188.159&SecurityKey=20260929145041&promotionId=&mvid=5101043014&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=f4ea4bda4d8835e4f702552d9824652a&ddCalcu=af24v5ea6ax44a2b8d9ad42d585823057ef4&sv=10004&ct=android"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/019c8976cc52a7e10d4d.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "天津卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-tjws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225756/10000100000000060000000000146052_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/tianjin-satellite.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/88d97601e02ef6bd8e19.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "黑龙江卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-hljws.m3u8",
+        "http://120.48.113.49:6006/738906901",
+        "https://idclive.hljtv.com:4430/live/hljws_own.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225758/10000100000000060000000000146046_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/738906901",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/nxjj/51/20251225/index.m3u8?msisdn=76368c129a8c9361bbe3207aa46b417f&mdspid=&spid=600697&netType=0&sid=5910022409&pid=2028597139&timestamp=20260929145047&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=738906901&ParentNodeID=-99&assertID=5910022409&client_ip=39.103.188.159&SecurityKey=20260929145047&promotionId=&mvid=5900004349&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=72667a89fda1385a288293150fdde2c8&ddCalcu=87c2v26ae6ld7adaf8095f1d3a912388852a&sv=10004&ct=android"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/a18ae2b181b4259b34cd.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "江西卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-jxws.m3u8",
+        "http://120.48.113.49:6006/783847495",
+        "http://45.192.97.170:8880/play/32.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225710/10000100000000060000000000146050_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/783847495",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/jxwshd/51/20190820/index.m3u8?msisdn=cb4c919e961dbd03c15bc336acc02538&mdspid=&spid=600633&netType=0&sid=5910021492&pid=2028597139&timestamp=20260929145042&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=783847495&ParentNodeID=-99&assertID=5910021492&client_ip=39.103.188.159&SecurityKey=20260929145042&promotionId=&mvid=5900004351&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=67f68422ce5c2bf9a3f573c5262b91c5&ddCalcu=56c7v1fa96yb8a2462225cce357c52fb3fa9&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/jxntv-satellite.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/a532fbe926554111641a.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "吉林卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-jlws.m3u8",
+        "http://120.48.113.49:6006/947472500",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225753/10000100000000060000000000146053_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/947472500",
+        "http://gslbmgsplive.miguvideo.com/envivo_v/2018/SD/jilin/1000/index.m3u8?msisdn=44cbeb22036a2160435177287a9ebe59&mdspid=&spid=600633&netType=0&sid=5910022164&pid=2028597139&timestamp=20260929145044&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=947472500&ParentNodeID=-99&assertID=5910022164&client_ip=39.103.182.111&SecurityKey=20260929145044&promotionId=&mvid=5900004357&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=f7f62dc61bcbd37da8b05a41d9084f86&ddCalcu=6f87vffa46z82a0d9cd6114bac5b0db387ad&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/jlntv-satellite.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/e423452176bafc14235c.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "陕西卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-shanxiws.m3u8",
+        "http://120.48.113.49:6006/738910838",
+        "http://45.192.97.170:8880/play/33.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225688/10000100000000060000000000146047_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/738910838",
+        "http://gslbmgsplive.miguvideo.com/migu/kailu/shan3xiws/51/20220809/index.m3u8?msisdn=1424379878c77b2752af72afd05f30fe&mdspid=&spid=600633&netType=0&sid=5910020475&pid=2028597139&timestamp=20260929145042&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=738910838&ParentNodeID=-99&assertID=5910020475&client_ip=39.103.188.159&SecurityKey=20260929145042&promotionId=&mvid=5900004331&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=846c902698eb9715c10ff8235770e4da&ddCalcu=a8d4v46aeck09a70725639288efbf90711c5&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/shaanxi-satellite.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/0ce49ebd2023cc284bab.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "山西卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-shanxiws2.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225730/10000100000000060000000000146042_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/shanxi-satellite.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/46984de495cd52fa7e73.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "云南卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-ynws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225687/10000100000000060000000000146055_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/yunnan-satellite.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/e943bc922b02b9b50c14.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "贵州卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-gzhws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225776/10000100000000060000000000240945_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/gzstv-satellite.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/1243f99ca46889d57ce7.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "广西卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-gxws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225711/10000100000000060000000000146049_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/gxtv-gxws.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/78021cbc932f56433df6.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "海南卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-hnws2.m3u8",
+        "http://120.48.113.49:6006/947472502",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226298/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/947472502",
+        "http://gslbmgsplive.miguvideo.com/envivo_x/SD/lvyou/711/index.m3u8?msisdn=90a20806c58b602e71792f01d2fa37b8&mdspid=&spid=600633&netType=0&sid=5910022165&pid=2028597139&timestamp=20260929145046&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=947472502&ParentNodeID=-99&assertID=5910022165&client_ip=39.103.182.111&SecurityKey=20260929145046&promotionId=&mvid=5900004359&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=9652940d4f5e33b832d3fd30852c6316&ddCalcu=6916v35a62zc9a24508d043fd5fe33d32b38&sv=10004&ct=android",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/hnntv-13"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/26f27e4b4984c10f8c0a.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "甘肃卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225755/10000100000000060000000000146094_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/gansu-1.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-pack/%E7%94%98%E8%82%83%E5%8D%AB%E8%A7%86.png?v=49c273ec49"
+    },
+    {
+      "name": "青海卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-qhws.m3u8",
+        "http://120.48.113.49:6006/947472506",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226301/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/947472506",
+        "http://gslbmgsplive.miguvideo.com/envivo_w/2018/SD/qinghai/1000/index.m3u8?msisdn=076777a6f4da71cd677ffd6ed0c5ff9e&mdspid=&spid=600633&netType=0&sid=5910022166&pid=2028597139&timestamp=20260929145044&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=947472506&ParentNodeID=-99&assertID=5910022166&client_ip=39.103.182.111&SecurityKey=20260929145044&promotionId=&mvid=5900004353&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=4a80c4d89c168b0995b35cb92a9c53e7&ddCalcu=74eav38a50zcca94ad2899bcc15638bb5099&sv=10004&ct=android"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/6f436b938051ee9341ba.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "宁夏卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-nxws.m3u8",
+        "http://120.48.113.49:6006/738910535",
+        "https://hls.nxhhy.cn/live/nxws1M.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225719/10000100000000060000000000146091_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221226371/10000100000000060000000000146100_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/738910535",
+        "http://gslbmgsplive.miguvideo.com/envivo_x/2018/SD/ningxia/1000/index.m3u8?msisdn=a3ac29fe260d2c9872f75baa88530fa6&mdspid=&spid=600697&netType=0&sid=5910022262&pid=2028597139&timestamp=20260929145046&Channel_ID=0116_2600034600-99000-201600010010028&ProgramID=738910535&ParentNodeID=-99&assertID=5910022262&client_ip=39.103.182.111&SecurityKey=20260929145046&promotionId=&mvid=5900004337&mcid=500020&playurlVersion=WX-A1-9.9.2-SNAPSHOT&userid=&jmhm=&videocodec=h264&appCode=miguvideo_android&bean=mgspad&tid=android&conFee=0&puData=8628b13d2371f43bbd339b47b9b06e33&ddCalcu=3836ve2a68z0bab193bd7243b7913f34d3bb&sv=10004&ct=android"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/8585f68d39f94e777e20.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "新疆卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-xjws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225759/10000100000000060000000000146043_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/xjtv-1.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/68a4c218cc6482b4b676.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "内蒙古卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-nmgws.m3u8",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/proxy/nmtv-satellite.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/5d210a749162d10658f1.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "西藏卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-xzws.m3u8",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225697/10000100000000060000000000146070_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225668/10000100000000060000000000148281_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/xizang-satellite.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/f42dc6754454663f1a21.png?v=1790563825345&from=source"
+    },
+    {
+      "name": "东南卫视",
+      "group": "地方卫视",
+      "urls": [
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/ysp-fjdnhz.m3u8",
+        "http://120.48.113.49:6006/849116810",
+        "http://cdnrrs.gz.chinamobile.com:80/PLTV/88888888/224/3221225739/10000100000000060000000000177606_0.smil/index.m3u8?fmt=ts2hls&rrsip=cdnrrs.gz.chinamobile.com%3A80&zoneoffset=480&servicetype=1&icpid=115&limitflux=-1&limitdur=-1&tenantId=8601&accountinfo=%2C10500014167159%2C2409%3A8a6a%3A1cb9%3Aa940%3A%3Aede%2C20260909222412%2C50000036601534989720039610017270%2C10001008682904%2C-1%2C0%2C1%2C%2C%2C2%2C%2C%2C%2C2%2C%2C10000100000000060000000000146100_0%2C60004771136225%2CEND&GuardEncType=2&RTS=1788963966&from=20&hms_devid=4654&online=1788963966&vqe=3",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/849116810",
+        "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/relay/fjtv-province-665248966136664064.m3u8"
+      ],
+      "logo": "http://43.248.102.104:10337/u/AjggFeSD7ktBn3lyV2g34STH/logo-cache/f71a0e6c774030377974.png?v=1790563825345&from=source"
     }
   ]
 }

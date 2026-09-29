@@ -9,6 +9,7 @@ object SP {
 
     // If Change channel with up and down in reversed order or not
     private const val KEY_CHANNEL_REVERSAL = "channel_reversal"
+    private const val KEY_CHANNEL_NUMBER_INPUT = "channel_number_input"
 
     // If start app on device boot or not
     private const val KEY_BOOT_STARTUP = "boot_startup"
@@ -30,6 +31,10 @@ object SP {
     var channelReversal: Boolean
         get() = sp.getBoolean(KEY_CHANNEL_REVERSAL, false)
         set(value) = sp.edit().putBoolean(KEY_CHANNEL_REVERSAL, value).apply()
+
+    var channelNumberInput: Boolean
+        get() = sp.getBoolean(KEY_CHANNEL_NUMBER_INPUT, false)
+        set(value) = sp.edit().putBoolean(KEY_CHANNEL_NUMBER_INPUT, value).apply()
 
     var bootStartup: Boolean
         get() = sp.getBoolean(KEY_BOOT_STARTUP, false)

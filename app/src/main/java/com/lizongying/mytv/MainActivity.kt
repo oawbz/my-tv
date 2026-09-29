@@ -33,6 +33,14 @@ class MainActivity : FragmentActivity() {
     private val handler = Handler()
     private val delayHideMain: Long = 10000
     private val delayHideSetting: Long = 10000
+    private var channelNumberInput = ""
+
+    private val channelNumberTimeout = Runnable {
+        val number = channelNumberInput.toIntOrNull() ?: return@Runnable
+        channelNumberInput = ""
+        mainFragment.selectChannelNumber(number)
+        playerFragment.showChannelNumber(number.toString(), CHANNEL_NUMBER_DISPLAY_MILLIS)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.i(TAG, "onCreate")
@@ -50,14 +58,14 @@ class MainActivity : FragmentActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         window.decorView.systemUiVisibility = SYSTEM_UI_FLAG_HIDE_NAVIGATION
 
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
+            fragmentTransaction
                 .add(R.id.main_browse_fragment, playerFragment)
                 .add(R.id.main_browse_fragment, infoFragment)
                 .add(R.id.main_browse_fragment, mainFragment)
-                .hide(mainFragment)
-                .commit()
         }
+        fragmentTransaction.hide(mainFragment).commit()
         gestureDetector = GestureDetector(this, GestureListener())
 
     }
@@ -127,6 +135,10 @@ class MainActivity : FragmentActivity() {
                 .hide(mainFragment)
                 .commit()
         }
+    }
+
+    fun hideChannelList() {
+        hideMainFragment()
     }
 
     fun fragmentReady(tag: String) {
@@ -241,6 +253,39 @@ class MainActivity : FragmentActivity() {
         }
     }
 
+    private fun handleChannelDigit(digit: Int) {
+        if (channelNumberInput.isEmpty()) {
+            channelNumberInput = digit.toString()
+            playerFragment.showChannelNumber("$channelNumberInput-")
+            handler.removeCallbacks(channelNumberTimeout)
+            handler.postDelayed(channelNumberTimeout, CHANNEL_NUMBER_ENTRY_TIMEOUT_MILLIS)
+            return
+        }
+
+        handler.removeCallbacks(channelNumberTimeout)
+        channelNumberInput += digit
+        val number = channelNumberInput.toIntOrNull()
+        channelNumberInput = ""
+        if (number != null) mainFragment.selectChannelNumber(number)
+        playerFragment.showChannelNumber(number?.toString() ?: "", CHANNEL_NUMBER_DISPLAY_MILLIS)
+    }
+
+    private fun cancelChannelNumberEntry() {
+        if (channelNumberInput.isEmpty()) return
+        handler.removeCallbacks(channelNumberTimeout)
+        channelNumberInput = ""
+        playerFragment.hideChannelNumber()
+    }
+
+    private fun confirmChannelNumberEntry(): Boolean {
+        val number = channelNumberInput.toIntOrNull() ?: return false
+        handler.removeCallbacks(channelNumberTimeout)
+        channelNumberInput = ""
+        mainFragment.selectChannelNumber(number)
+        playerFragment.showChannelNumber(number.toString(), CHANNEL_NUMBER_DISPLAY_MILLIS)
+        return true
+    }
+
     private fun back() {
         if (!mainFragment.isHidden) {
             hideMainFragment()
@@ -262,6 +307,16 @@ class MainActivity : FragmentActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         Log.i(TAG, "keyCode $keyCode, event $event")
+        val digit = keyCode.toChannelDigit()
+        if (digit != null && SP.channelNumberInput) {
+            if (event?.repeatCount == 0) handleChannelDigit(digit)
+            return true
+        }
+        if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+            if (confirmChannelNumberEntry()) return true
+        }
+        cancelChannelNumberEntry()
+
         when (keyCode) {
             KeyEvent.KEYCODE_ESCAPE -> {
                 back()
@@ -322,19 +377,6 @@ class MainActivity : FragmentActivity() {
                 channelDown()
             }
 
-            KeyEvent.KEYCODE_DPAD_LEFT -> {
-                if (!mainFragment.isVisible && !settingFragment.isVisible) {
-                    switchMainFragment()
-                    return true
-                }
-            }
-
-            KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                if (!mainFragment.isVisible && !settingFragment.isVisible) {
-                    showSetting()
-                    return true
-                }
-            }
         }
 
         return super.onKeyDown(keyCode, event)
@@ -356,14 +398,24 @@ class MainActivity : FragmentActivity() {
     override fun onPause() {
         Log.i(TAG, "onPause")
         super.onPause()
+        cancelChannelNumberEntry()
+        playerFragment.hideChannelNumber()
         handler.removeCallbacks(hideMain)
         handler.removeCallbacks(hideSetting)
     }
 
     private companion object {
         const val TAG = "MainActivity"
+        const val CHANNEL_NUMBER_ENTRY_TIMEOUT_MILLIS = 1500L
+        const val CHANNEL_NUMBER_DISPLAY_MILLIS = 1200L
         val REQUIRED_FRAGMENTS = setOf(
             "PlayerFragment", "MainFragment", "InfoFragment"
         )
     }
+}
+
+private fun Int.toChannelDigit(): Int? = when (this) {
+    in KeyEvent.KEYCODE_0..KeyEvent.KEYCODE_9 -> this - KeyEvent.KEYCODE_0
+    in KeyEvent.KEYCODE_NUMPAD_0..KeyEvent.KEYCODE_NUMPAD_9 -> this - KeyEvent.KEYCODE_NUMPAD_0
+    else -> null
 }

@@ -22,4 +22,35 @@
         android:layout_gravity="center"
         android:indeterminateTint="#FFFFFFFF"
         android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/playback_error_overlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#CC000000"
+        android:gravity="center"
+        android:padding="16dp"
+        android:text="当前频道异常，请切换频道"
+        android:textColor="#FFFFFFFF"
+        android:textSize="22sp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/channel_number_overlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="28dp"
+        android:background="#CC000000"
+        android:gravity="center"
+        android:minWidth="56dp"
+        android:paddingStart="14dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="8dp"
+        android:textColor="#FFFFFFFF"
+        android:textSize="30sp"
+        android:visibility="gone" />
 </FrameLayout>

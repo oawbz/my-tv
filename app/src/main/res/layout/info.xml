@@ -19,7 +19,7 @@
         android:layout_width="224dp"
         android:layout_height="match_parent"
         android:layout_marginStart="96dp"
-        android:background="#FF263238"
+        android:background="@color/channel_text_background"
         android:gravity="start|center_vertical"
         android:orientation="vertical"
         android:padding="7dp">
@@ -32,7 +32,7 @@
             android:gravity="start"
             android:maxLines="1"
             android:ellipsize="end"
-            android:textColor="#FFEEEEEE"
+            android:textColor="@color/channel_text_color"
             android:textSize="22sp" />
     </LinearLayout>
 
