@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -20,13 +21,15 @@ const maxSharedObject = 8 << 20
 const maxSharedCache = 128 << 20
 
 type sharedObject struct {
-	data     []byte
-	manifest bool
-	status   int
-	url      *url.URL
-	header   http.Header
-	hub      *streamHub
-	expires  time.Time
+	data          []byte
+	manifest      bool
+	status        int
+	url           *url.URL
+	header        http.Header
+	hub           *streamHub
+	expires       time.Time
+	fetchDuration time.Duration
+	observed      atomic.Bool
 }
 type sharedFlight struct {
 	done   chan struct{}
@@ -57,6 +60,23 @@ type streamHub struct {
 	cancel      context.CancelFunc
 	body        io.ReadCloser
 	bodyReader  *bufio.Reader
+	startedAt   time.Time
+	quality     *segmentObserver
+}
+
+type segmentObserver struct {
+	g          *gateway
+	channelKey string
+	sourceURL  string
+	duration   time.Duration
+}
+
+func (h *streamHub) setQualityObserver(g *gateway, channelKey, sourceURL string, duration time.Duration) {
+	h.mu.Lock()
+	if h.quality == nil {
+		h.quality = &segmentObserver{g, channelKey, sourceURL, duration}
+	}
+	h.mu.Unlock()
 }
 
 func (h *streamHub) broadcast(g *gateway, key string, reader io.Reader, meta *sharedObject) {
@@ -64,9 +84,13 @@ func (h *streamHub) broadcast(g *gateway, key string, reader io.Reader, meta *sh
 	defer h.body.Close()
 	buffer := make([]byte, 32<<10)
 	complete := true
+	var readErr error
+	idle := time.AfterFunc(12*time.Second, h.cancel)
+	defer idle.Stop()
 	for {
 		n, err := reader.Read(buffer)
 		if n > 0 {
+			idle.Reset(12 * time.Second)
 			chunk := append([]byte(nil), buffer[:n]...)
 			h.mu.Lock()
 			if h.replay && h.historySize+len(chunk) <= maxSharedObject {
@@ -95,6 +119,7 @@ func (h *streamHub) broadcast(g *gateway, key string, reader io.Reader, meta *sh
 		if err != nil {
 			if err != io.EOF {
 				complete = false
+				readErr = err
 			}
 			break
 		}
@@ -108,22 +133,30 @@ func (h *streamHub) broadcast(g *gateway, key string, reader io.Reader, meta *sh
 		}
 	}
 	h.closed = true
+	observer := h.quality
+	hadClients := len(h.clients) > 0
 	for client := range h.clients {
 		close(client)
 		delete(h.clients, client)
 	}
 	h.mu.Unlock()
+	if observer != nil && (complete || (readErr != nil && hadClients)) {
+		observer.g.observeSegment(observer.channelKey, observer.sourceURL, observer.duration, time.Since(h.startedAt), readErr)
+	}
 	g.sharedMu.Lock()
 	if g.streams[key] == h {
 		delete(g.streams, key)
 	}
 	delete(g.streamMeta, key)
 	if complete && h.replay && len(cached) > 0 {
-		copyMeta := *meta
-		copyMeta.hub = nil
-		copyMeta.data = cached
-		copyMeta.expires = time.Now().Add(5 * time.Minute)
-		g.storeObjectLocked(key, &copyMeta)
+		cachedObject := &sharedObject{
+			data: cached, manifest: meta.manifest, status: meta.status,
+			url: meta.url, header: meta.header, fetchDuration: time.Since(h.startedAt),
+			expires: time.Now().Add(5 * time.Minute),
+		}
+		// The upstream observation was already recorded when the hub finished.
+		cachedObject.observed.Store(true)
+		g.storeObjectLocked(key, cachedObject)
 	}
 	g.sharedMu.Unlock()
 	close(h.done)
@@ -277,6 +310,7 @@ func (g *gateway) sharedFetch(ctx context.Context, raw, rangeHeader, ifRange str
 }
 
 func (g *gateway) fetchObject(raw, rangeHeader, ifRange string) (*sharedObject, error) {
+	startedAt := time.Now()
 	ctx, cancel := context.WithCancel(context.Background())
 	timer := time.AfterFunc(20*time.Second, cancel)
 	defer timer.Stop()
@@ -319,6 +353,7 @@ func (g *gateway) fetchObject(raw, rangeHeader, ifRange string) (*sharedObject, 
 		}
 		obj.data = data
 		obj.manifest = true
+		obj.fetchDuration = time.Since(startedAt)
 		obj.expires = time.Now().Add(time.Second)
 		return obj, nil
 	}
@@ -341,11 +376,12 @@ func (g *gateway) fetchObject(raw, rangeHeader, ifRange string) (*sharedObject, 
 			return nil, errors.New("empty media object")
 		}
 		obj.data = data
+		obj.fetchDuration = time.Since(startedAt)
 		obj.expires = time.Now().Add(5 * time.Minute)
 		return obj, nil
 	}
 	replay := strings.HasSuffix(strings.ToLower(resp.Request.URL.Path), ".ts") || strings.HasSuffix(strings.ToLower(resp.Request.URL.Path), ".m4s") || strings.HasSuffix(strings.ToLower(resp.Request.URL.Path), ".aac")
-	hub := &streamHub{ready: make(chan struct{}), done: make(chan struct{}), clients: map[chan []byte]struct{}{}, replay: replay, cancel: cancel, body: resp.Body, bodyReader: reader}
+	hub := &streamHub{ready: make(chan struct{}), done: make(chan struct{}), clients: map[chan []byte]struct{}{}, replay: replay, cancel: cancel, body: resp.Body, bodyReader: reader, startedAt: startedAt}
 	obj.hub = hub
 	return obj, nil
 }

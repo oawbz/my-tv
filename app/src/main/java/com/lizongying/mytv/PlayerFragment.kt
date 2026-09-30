@@ -20,6 +20,13 @@ class PlayerFragment : Fragment() {
     private var player: ExoPlayer? = null
     private var channel: TVViewModel? = null
     private val channelNumberHandler = Handler(Looper.getMainLooper())
+    private val recoveryHandler = Handler(Looper.getMainLooper())
+    private var recoveryAttempts = 0
+    private var recoveryGeneration = 0
+    private var bufferingTimeout: Runnable? = null
+    private var stablePlayback: Runnable? = null
+    private var pendingRecovery: Runnable? = null
+    private var resumePendingRecovery = false
     private val hideChannelNumber = Runnable {
         _binding?.channelNumberOverlay?.visibility = View.GONE
     }
@@ -39,17 +46,30 @@ class PlayerFragment : Fragment() {
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
-                if (isPlaying) hideSwitching()
+                if (isPlaying) {
+                    hideSwitching()
+                    scheduleStablePlayback()
+                } else {
+                    cancelStablePlayback()
+                }
             }
 
             override fun onPlaybackStateChanged(playbackState: Int) {
                 when (playbackState) {
-                    Player.STATE_BUFFERING -> showSwitching()
+                    Player.STATE_BUFFERING -> {
+                        showSwitching()
+                        scheduleBufferingTimeout()
+                    }
                     Player.STATE_READY -> {
+                        cancelBufferingTimeout()
                         hideSwitching()
                         hidePlaybackError()
                     }
-                    Player.STATE_IDLE -> hideSwitching()
+                    Player.STATE_IDLE -> {
+                        cancelBufferingTimeout()
+                        hideSwitching()
+                    }
+                    Player.STATE_ENDED -> cancelBufferingTimeout()
                 }
             }
         })
@@ -58,12 +78,22 @@ class PlayerFragment : Fragment() {
     }
 
     fun play(tvViewModel: TVViewModel) {
+        cancelRecovery()
+        recoveryAttempts = 0
+        resumePendingRecovery = false
         channel = tvViewModel
+        startPlayback(tvViewModel)
+    }
+
+    private fun startPlayback(tvViewModel: TVViewModel) {
         hidePlaybackError()
         player?.apply {
             setMediaItem(MediaItem.fromUri(tvViewModel.getVideoUrlCurrent()))
             prepare()
-            if (this@PlayerFragment.isResumed) play()
+            if (this@PlayerFragment.isResumed) {
+                play()
+                if (playbackState == Player.STATE_BUFFERING) scheduleBufferingTimeout()
+            }
         }
     }
 
@@ -98,26 +128,112 @@ class PlayerFragment : Fragment() {
 
     private fun handlePlaybackError() {
         val current = channel
-        if (current != null && current.nextSource()) {
-            showSwitching()
-            play(current)
-        } else {
-            hideSwitching()
+        if (current == null) {
             showPlaybackError()
+            return
         }
+        cancelBufferingTimeout()
+        cancelStablePlayback()
+        pendingRecovery?.let(recoveryHandler::removeCallbacks)
+        pendingRecovery = null
+        if (isHls(current) && recoveryAttempts < MAX_RECOVERY_ATTEMPTS) {
+            val delay = RECOVERY_DELAYS_MILLIS[recoveryAttempts++]
+            val generation = recoveryGeneration
+            player?.stop()
+            showSwitching()
+            val retry = Runnable {
+                pendingRecovery = null
+                if (generation == recoveryGeneration && isResumed && channel === current) {
+                    startPlayback(current)
+                }
+            }
+            pendingRecovery = retry
+            recoveryHandler.postDelayed(retry, delay)
+            return
+        }
+        if (current.nextSource()) {
+            cancelRecovery()
+            recoveryAttempts = 0
+            showSwitching()
+            startPlayback(current)
+            return
+        }
+        hideSwitching()
+        showPlaybackError()
+    }
+
+    private fun isHls(current: TVViewModel): Boolean =
+        current.getVideoUrlCurrent().substringBefore('?').endsWith(".m3u8", ignoreCase = true)
+
+    private fun scheduleBufferingTimeout() {
+        cancelBufferingTimeout()
+        val current = channel ?: return
+        if (!isHls(current) || player?.playWhenReady != true || !isResumed) return
+        val generation = recoveryGeneration
+        val timeout = Runnable {
+            bufferingTimeout = null
+            if (generation == recoveryGeneration && channel === current && isResumed &&
+                player?.playbackState == Player.STATE_BUFFERING && player?.playWhenReady == true
+            ) {
+                Log.w(TAG, "HLS buffering timed out; reopening channel")
+                handlePlaybackError()
+            }
+        }
+        bufferingTimeout = timeout
+        recoveryHandler.postDelayed(timeout, BUFFERING_TIMEOUT_MILLIS)
+    }
+
+    private fun cancelBufferingTimeout() {
+        bufferingTimeout?.let(recoveryHandler::removeCallbacks)
+        bufferingTimeout = null
+    }
+
+    private fun scheduleStablePlayback() {
+        cancelStablePlayback()
+        val generation = recoveryGeneration
+        val reset = Runnable {
+            stablePlayback = null
+            if (generation == recoveryGeneration && player?.isPlaying == true) {
+                recoveryAttempts = 0
+            }
+        }
+        stablePlayback = reset
+        recoveryHandler.postDelayed(reset, STABLE_PLAYBACK_MILLIS)
+    }
+
+    private fun cancelStablePlayback() {
+        stablePlayback?.let(recoveryHandler::removeCallbacks)
+        stablePlayback = null
+    }
+
+    private fun cancelRecovery() {
+        recoveryGeneration++
+        pendingRecovery?.let(recoveryHandler::removeCallbacks)
+        pendingRecovery = null
+        cancelBufferingTimeout()
+        cancelStablePlayback()
     }
 
     override fun onResume() {
         super.onResume()
-        player?.takeIf { it.mediaItemCount > 0 }?.play()
+        if (resumePendingRecovery) {
+            resumePendingRecovery = false
+            channel?.let(::startPlayback)
+        } else {
+            player?.takeIf { it.mediaItemCount > 0 }?.play()
+        }
+        if (player?.playbackState == Player.STATE_BUFFERING) scheduleBufferingTimeout()
     }
 
     override fun onPause() {
+        resumePendingRecovery = pendingRecovery != null
+        cancelRecovery()
         player?.pause()
         super.onPause()
     }
 
     override fun onDestroyView() {
+        cancelRecovery()
         channelNumberHandler.removeCallbacks(hideChannelNumber)
         (activity as? MainActivity)?.fragmentUnavailable("PlayerFragment")
         _binding?.playerView?.player = null
@@ -129,5 +245,9 @@ class PlayerFragment : Fragment() {
 
     companion object {
         private const val TAG = "PlayerFragment"
+        private const val MAX_RECOVERY_ATTEMPTS = 3
+        private val RECOVERY_DELAYS_MILLIS = longArrayOf(1_500L, 3_000L, 6_000L)
+        private const val BUFFERING_TIMEOUT_MILLIS = 20_000L
+        private const val STABLE_PLAYBACK_MILLIS = 30_000L
     }
 }

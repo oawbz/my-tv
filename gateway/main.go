@@ -44,6 +44,7 @@ type channel struct {
 	mu       sync.Mutex
 	ranked   []string
 	badUntil map[string]time.Time
+	quality  map[string]*sourceQuality
 }
 type apiChannel struct {
 	Name  string   `json:"name"`
@@ -55,6 +56,7 @@ type reference struct {
 	url        string
 	channelKey string
 	sourceURL  string
+	duration   time.Duration
 	expires    time.Time
 }
 type gateway struct {
@@ -316,6 +318,11 @@ func (g *gateway) refresh(ctx context.Context) error {
 				for raw, until := range prior.badUntil {
 					ch.badUntil[raw] = until
 				}
+				ch.quality = make(map[string]*sourceQuality, len(prior.quality))
+				for raw, q := range prior.quality {
+					copy := *q
+					ch.quality[raw] = &copy
+				}
 			}
 			prior.mu.Unlock()
 		}
@@ -442,7 +449,7 @@ func (g *gateway) demote(channelKey, sourceURL string) {
 		}
 	}
 }
-func (g *gateway) register(raw, channelKey, sourceURL string) string {
+func (g *gateway) register(raw, channelKey, sourceURL string, duration time.Duration) string {
 	var b [18]byte
 	_, _ = rand.Read(b[:])
 	token := hex.EncodeToString(b[:])
@@ -456,7 +463,7 @@ func (g *gateway) register(raw, channelKey, sourceURL string) string {
 		}
 		g.lastRefSweep = now
 	}
-	g.refs[token] = reference{raw, channelKey, sourceURL, now.Add(15 * time.Minute)}
+	g.refs[token] = reference{raw, channelKey, sourceURL, duration, now.Add(15 * time.Minute)}
 	g.mu.Unlock()
 	return token
 }
@@ -470,18 +477,22 @@ func (g *gateway) publicBase(c *gin.Context) string {
 	}
 	return scheme + "://" + c.Request.Host
 }
-func (g *gateway) resourceURL(base, raw, channelKey, sourceURL string) string {
-	return base + "/resource/" + g.register(raw, channelKey, sourceURL)
+func (g *gateway) resourceURL(base, raw, channelKey, sourceURL string, duration time.Duration) string {
+	return base + "/resource/" + g.register(raw, channelKey, sourceURL, duration)
 }
 func (g *gateway) rewrite(data []byte, upstream *url.URL, base, channelKey, sourceURL string) ([]byte, int) {
 	lines := strings.Split(string(data), "\n")
 	valid := 0
+	var segmentDuration time.Duration
 	for i, line := range lines {
 		trimmed := strings.TrimSpace(line)
 		if trimmed == "" {
 			continue
 		}
 		if strings.HasPrefix(trimmed, "#") {
+			if strings.HasPrefix(trimmed, "#EXTINF:") {
+				segmentDuration = parseSegmentDuration(trimmed)
+			}
 			if strings.Contains(trimmed, "URI=\"") {
 				lines[i] = uriRE.ReplaceAllStringFunc(line, func(match string) string {
 					sub := uriRE.FindStringSubmatch(match)
@@ -492,15 +503,16 @@ func (g *gateway) rewrite(data []byte, upstream *url.URL, base, channelKey, sour
 					if strings.HasPrefix(trimmed, "#EXT-X-MEDIA:") || strings.HasPrefix(trimmed, "#EXT-X-I-FRAME-STREAM-INF:") || strings.HasPrefix(trimmed, "#EXT-X-IMAGE-STREAM-INF:") {
 						valid++
 					}
-					return `URI="` + g.resourceURL(base, u.String(), channelKey, sourceURL) + `"`
+					return `URI="` + g.resourceURL(base, u.String(), channelKey, sourceURL, 0) + `"`
 				})
 			}
 		} else {
 			u, e := upstream.Parse(trimmed)
 			if e == nil && validURL(u.String()) {
 				valid++
-				lines[i] = g.resourceURL(base, u.String(), channelKey, sourceURL)
+				lines[i] = g.resourceURL(base, u.String(), channelKey, sourceURL, segmentDuration)
 			}
+			segmentDuration = 0
 		}
 	}
 	return []byte(strings.Join(lines, "\n")), valid
@@ -513,7 +525,11 @@ func isManifest(resp *http.Response, reader *bufio.Reader) bool {
 	peek, _ := reader.Peek(7)
 	return bytes.Equal(peek, []byte("#EXTM3U"))
 }
-func (g *gateway) relay(c *gin.Context, raw, channelKey, sourceURL string) error {
+func (g *gateway) relay(c *gin.Context, raw, channelKey, sourceURL string, segmentDuration ...time.Duration) error {
+	var duration time.Duration
+	if len(segmentDuration) > 0 {
+		duration = segmentDuration[0]
+	}
 	var obj *sharedObject
 	for attempt := 0; attempt < 2; attempt++ {
 		fetched, err := g.sharedFetch(c.Request.Context(), raw, c.GetHeader("Range"), c.GetHeader("If-Range"))
@@ -521,6 +537,13 @@ func (g *gateway) relay(c *gin.Context, raw, channelKey, sourceURL string) error
 			return err
 		}
 		obj = fetched
+		if duration > 0 {
+			if obj.hub != nil {
+				obj.hub.setQualityObserver(g, channelKey, sourceURL, duration)
+			} else if !obj.manifest && obj.observed.CompareAndSwap(false, true) {
+				g.observeSegment(channelKey, sourceURL, duration, obj.fetchDuration, nil)
+			}
+		}
 		if obj.hub == nil {
 			break
 		}
@@ -552,7 +575,7 @@ func (g *gateway) relay(c *gin.Context, raw, channelKey, sourceURL string) error
 }
 func (g *gateway) playCandidates(c *gin.Context, ch *channel) bool {
 	for _, raw := range g.ranked(c.Request.Context(), ch) {
-		if err := g.relay(c, raw, ch.key, raw); err == nil {
+		if err := g.relay(c, raw, ch.key, raw, 0); err == nil {
 			return true
 		} else {
 			g.demote(ch.key, raw)
@@ -634,7 +657,7 @@ func (g *gateway) router() *gin.Engine {
 			c.Status(404)
 			return
 		}
-		if e := g.relay(c, ref.url, ref.channelKey, ref.sourceURL); e != nil {
+		if e := g.relay(c, ref.url, ref.channelKey, ref.sourceURL, ref.duration); e != nil {
 			g.demote(ref.channelKey, ref.sourceURL)
 			if !c.Writer.Written() {
 				c.Status(502)
