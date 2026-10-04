@@ -51,7 +51,7 @@ object SP {
         set(value) = sp.edit().putBoolean(KEY_BOOT_STARTUP, value).apply()
 
     var channelsUrl: String
-        get() = sp.getString(KEY_CHANNELS_URL, "https://awbz.cn/tv/channels.json").orEmpty()
+        get() = sp.getString(KEY_CHANNELS_URL, "http://192.168.1.233:2219/channels.json").orEmpty()
         set(value) = sp.edit().putString(KEY_CHANNELS_URL, value).apply()
 
     var itemPosition: Int

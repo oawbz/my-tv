@@ -46,6 +46,7 @@ class PlayerFragment : Fragment() {
             }
 
             override fun onIsPlayingChanged(isPlaying: Boolean) {
+                (activity as? MainActivity)?.setPlaybackActive(isPlaying)
                 if (isPlaying) {
                     hideSwitching()
                     scheduleStablePlayback()
@@ -69,7 +70,11 @@ class PlayerFragment : Fragment() {
                         cancelBufferingTimeout()
                         hideSwitching()
                     }
-                    Player.STATE_ENDED -> cancelBufferingTimeout()
+                    Player.STATE_ENDED -> {
+                        cancelBufferingTimeout()
+                        hideSwitching()
+                        showPlaybackError()
+                    }
                 }
             }
         })
@@ -86,13 +91,21 @@ class PlayerFragment : Fragment() {
     }
 
     private fun startPlayback(tvViewModel: TVViewModel) {
+        (activity as? MainActivity)?.setPlaybackActive(false)
         hidePlaybackError()
         player?.apply {
-            setMediaItem(MediaItem.fromUri(tvViewModel.getVideoUrlCurrent()))
-            prepare()
-            if (this@PlayerFragment.isResumed) {
-                play()
-                if (playbackState == Player.STATE_BUFFERING) scheduleBufferingTimeout()
+            try {
+                setMediaItem(MediaItem.fromUri(tvViewModel.getVideoUrlCurrent()))
+                prepare()
+                if (this@PlayerFragment.isResumed) {
+                    play()
+                    if (playbackState == Player.STATE_BUFFERING) scheduleBufferingTimeout()
+                }
+            } catch (e: IllegalArgumentException) {
+                Log.e(TAG, "Invalid playback input", e)
+                stop()
+                hideSwitching()
+                showPlaybackError()
             }
         }
     }
@@ -115,6 +128,7 @@ class PlayerFragment : Fragment() {
     }
 
     private fun showPlaybackError() {
+        (activity as? MainActivity)?.setPlaybackActive(false)
         _binding?.playbackErrorOverlay?.visibility = View.VISIBLE
     }
 
@@ -223,6 +237,7 @@ class PlayerFragment : Fragment() {
             player?.takeIf { it.mediaItemCount > 0 }?.play()
         }
         if (player?.playbackState == Player.STATE_BUFFERING) scheduleBufferingTimeout()
+        (activity as? MainActivity)?.setPlaybackActive(player?.isPlaying == true)
     }
 
     override fun onPause() {

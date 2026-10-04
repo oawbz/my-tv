@@ -98,6 +98,7 @@ class MainFragment : BrowseSupportFragment() {
     }
 
     private fun playChannel(tvViewModel: TVViewModel) {
+        if (!isAdded || view == null || tvViewModel !in tvViewModels) return
         tvViewModel.resetSource()
         SP.selectedChannel = channelKey(tvViewModel.getTV())
         Log.i(TAG, "switch ${tvViewModel.getTV().title}")
@@ -264,7 +265,7 @@ class MainFragment : BrowseSupportFragment() {
             val playingPosition = tvViewModels.indexOfFirst {
                 channelKey(it.getTV()) == SP.selectedChannel
             }.takeIf { it >= 0 } ?: itemPosition
-            val previousPosition = (playingPosition - 1).coerceAtLeast(0)
+            val previousPosition = (playingPosition + tvViewModels.size - 1) % tvViewModels.size
             if (previousPosition == playingPosition) return@post
             itemPosition = previousPosition
             playChannel(tvViewModels[itemPosition])
@@ -277,7 +278,7 @@ class MainFragment : BrowseSupportFragment() {
             val playingPosition = tvViewModels.indexOfFirst {
                 channelKey(it.getTV()) == SP.selectedChannel
             }.takeIf { it >= 0 } ?: itemPosition
-            val nextPosition = (playingPosition + 1).coerceAtMost(tvViewModels.lastIndex)
+            val nextPosition = (playingPosition + 1) % tvViewModels.size
             if (nextPosition == playingPosition) return@post
             itemPosition = nextPosition
             playChannel(tvViewModels[itemPosition])

@@ -7,8 +7,6 @@ import android.widget.ImageView
 import androidx.leanback.widget.ImageCardView
 import androidx.leanback.widget.Presenter
 import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.lizongying.mytv.models.TVViewModel
 
 class CardPresenter(private val onTouchChannel: (TVViewModel) -> Unit) : Presenter() {
@@ -41,13 +39,7 @@ class CardPresenter(private val onTouchChannel: (TVViewModel) -> Unit) : Present
             image.setBackgroundColor(
                 ContextCompat.getColor(image.context, R.color.channel_logo_background)
             )
-            if (tv.logo.isNotEmpty()) {
-                Glide.with(image).load(tv.logo)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .centerInside().into(image)
-            } else {
-                Glide.with(image).clear(image)
-            }
+            LogoLoader.load(image, tv.logo)
         }
         card.setBackgroundColor(
             ContextCompat.getColor(card.context, R.color.channel_text_background)
@@ -57,7 +49,7 @@ class CardPresenter(private val onTouchChannel: (TVViewModel) -> Unit) : Present
 
     override fun onUnbindViewHolder(viewHolder: ViewHolder) {
         (viewHolder.view as ImageCardView).mainImageView?.let { image ->
-            Glide.with(image).clear(image)
+            LogoLoader.clear(image)
         }
     }
 }

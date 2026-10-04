@@ -695,7 +695,7 @@ func (g *gateway) router() *gin.Engine {
 		base := requestBase(c)
 		out := make([]apiChannel, 0, len(chs))
 		for _, ch := range chs {
-			logo := g.withToken(base+"/logo/"+ch.key, c.Query(tokenQueryKey))
+			logo := g.withToken(base+"/logo/"+ch.key+"?format=png-v1", c.Query(tokenQueryKey))
 			play := g.withToken(base+"/play/"+ch.key+"/index.m3u8", c.Query(tokenQueryKey))
 			out = append(out, apiChannel{ch.Name, ch.Group, []string{play}, logo})
 		}
@@ -710,7 +710,7 @@ func (g *gateway) router() *gin.Engine {
 		for _, ch := range chs {
 			name := m3uField(ch.Name)
 			group := m3uField(ch.Group)
-			logo := g.withToken(base+"/logo/"+ch.key, c.Query(tokenQueryKey))
+			logo := g.withToken(base+"/logo/"+ch.key+"?format=png-v1", c.Query(tokenQueryKey))
 			play := g.withToken(base+"/play/"+ch.key+"/index.m3u8", c.Query(tokenQueryKey))
 			fmt.Fprintf(&playlist, "#EXTINF:-1 tvg-id=\"%s\" tvg-name=\"%s\" tvg-logo=\"%s\" group-title=\"%s\",%s\n%s\n", m3uField(ch.tvgID), name, logo, group, name, play)
 		}

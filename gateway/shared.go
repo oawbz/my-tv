@@ -245,7 +245,11 @@ func (g *gateway) storeObjectLocked(key string, obj *sharedObject) {
 }
 
 func (g *gateway) sharedFetch(ctx context.Context, raw, rangeHeader, ifRange string) (*sharedObject, error) {
-	key := g.upstreamUA() + "\x00" + raw + "\x00" + rangeHeader + "\x00" + ifRange
+	return g.sharedFetchUsing(ctx, raw, rangeHeader, ifRange, "", g.fetchObject)
+}
+
+func (g *gateway) sharedFetchUsing(ctx context.Context, raw, rangeHeader, ifRange, namespace string, fetch func(string, string, string) (*sharedObject, error)) (*sharedObject, error) {
+	key := namespace + g.upstreamUA() + "\x00" + raw + "\x00" + rangeHeader + "\x00" + ifRange
 	g.sharedMu.Lock()
 	if item := g.objects[key]; item != nil && time.Now().Before(item.expires) {
 		g.sharedMu.Unlock()
@@ -264,7 +268,7 @@ func (g *gateway) sharedFetch(ctx context.Context, raw, rangeHeader, ifRange str
 		g.sharedMu.Unlock()
 		select {
 		case <-done:
-			return g.sharedFetch(ctx, raw, rangeHeader, ifRange)
+			return g.sharedFetchUsing(ctx, raw, rangeHeader, ifRange, namespace, fetch)
 		case <-ctx.Done():
 			return nil, ctx.Err()
 		}
@@ -284,7 +288,7 @@ func (g *gateway) sharedFetch(ctx context.Context, raw, rangeHeader, ifRange str
 	flight := &sharedFlight{done: make(chan struct{})}
 	g.flights[key] = flight
 	g.sharedMu.Unlock()
-	obj, err := g.fetchObject(raw, rangeHeader, ifRange)
+	obj, err := fetch(raw, rangeHeader, ifRange)
 	g.sharedMu.Lock()
 	flight.object = obj
 	flight.err = err

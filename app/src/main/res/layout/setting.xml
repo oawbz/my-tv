@@ -41,7 +41,7 @@
             android:inputType="textUri"
             android:textColor="#FFFFFFFF"
             android:textColorHint="#99FFFFFF"
-            android:hint="https://awbz.cn/tv/channels.json" />
+            android:hint="http://192.168.1.233:2219/channels.json" />
         <Button
             android:id="@+id/save_channels_url"
             android:layout_width="match_parent"

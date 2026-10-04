@@ -87,7 +87,7 @@ func TestTokenAuthenticationAcrossPlaylistAndResources(t *testing.T) {
 		t.Fatal(err)
 	}
 	response.Body.Close()
-	if response.StatusCode != 200 || len(doc.Channels) != 1 || !strings.HasSuffix(doc.Channels[0].URLs[0], "?toke=first") || !strings.HasSuffix(doc.Channels[0].Logo, "?toke=first") || response.Header.Get("Cache-Control") != "private, no-store" {
+	if response.StatusCode != 200 || len(doc.Channels) != 1 || !strings.HasSuffix(doc.Channels[0].URLs[0], "?toke=first") || !strings.Contains(doc.Channels[0].Logo, "toke=first") || response.Header.Get("Cache-Control") != "private, no-store" {
 		t.Fatalf("authenticated JSON: status=%d channels=%+v cache=%q", response.StatusCode, doc.Channels, response.Header.Get("Cache-Control"))
 	}
 	encodedSecond := url.QueryEscape("second&+")

@@ -1,6 +1,5 @@
 package com.lizongying.mytv
 
-import android.net.Uri
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.JsonParseException
@@ -35,7 +34,7 @@ object ChannelDataRepository {
     }
 
     private suspend fun fetchRemoteJson(url: String): String {
-        if (!isHttpUrl(url)) throw IOException("Channel URL must be a valid HTTP or HTTPS URL")
+        if (!ChannelInput.isHttpUrl(url)) throw IOException("Channel URL must be a valid HTTP or HTTPS URL")
         val request = Request.Builder().url(url).get().build()
         return suspendCancellableCoroutine { continuation ->
             val call = client.newCall(request)
@@ -59,9 +58,9 @@ object ChannelDataRepository {
 
     private fun readResponse(response: Response): String {
         if (!response.isSuccessful) {
-            throw IOException("Channel request failed with HTTP ${response.code}")
+            throw IOException("Channel request failed with HTTP ${response.code()}")
         }
-        val body = response.body ?: throw IOException("Channel response body is empty")
+        val body = response.body() ?: throw IOException("Channel response body is empty")
         if (body.contentLength() > MAX_CONFIG_BYTES) {
             throw IOException("Channel response is too large")
         }
@@ -81,6 +80,7 @@ object ChannelDataRepository {
     }
 
     private fun parseChannels(json: String): Map<String, List<TV>> {
+        ChannelInput.checkJson(json)
         val config = try {
             gson.fromJson(json, RemoteChannels::class.java)
         } catch (e: JsonParseException) {
@@ -94,6 +94,7 @@ object ChannelDataRepository {
         if (entries.isNullOrEmpty()) {
             throw IOException("Channel list is empty")
         }
+        if (entries.size > ChannelInput.MAX_CHANNELS) throw IOException("Too many channels")
 
         val grouped = linkedMapOf<String, MutableList<TV>>()
         for (entry in entries) {
@@ -102,12 +103,15 @@ object ChannelDataRepository {
                 continue
             }
             val name = entry.name?.trim().takeUnless { it.isNullOrEmpty() }
-            if (name == null) {
+            if (name == null || name.length > 256) {
                 Log.w(TAG, "Skipping channel without a name")
                 continue
             }
             val group = entry.group?.trim().takeUnless { it.isNullOrEmpty() } ?: "其他"
-            val urls = entry.urls?.mapNotNull { it?.trim()?.takeIf(::isHttpUrl) }
+            if (group.length > 128) continue
+            val urls = entry.urls?.asSequence()?.mapNotNull {
+                it?.trim()?.takeIf(ChannelInput::isHttpUrl)
+            }?.distinct()?.take(ChannelInput.MAX_SOURCES)?.toList()
                 ?: emptyList()
             if (urls.isEmpty()) {
                 Log.w(TAG, "Skipping channel $name without a valid playback URL")
@@ -118,8 +122,11 @@ object ChannelDataRepository {
                 title = name,
                 videoUrl = urls,
                 channel = group,
-                logo = entry.logo?.trim()?.takeIf(::isHttpUrl).orEmpty(),
+                logo = entry.logo?.trim()?.takeIf(ChannelInput::isHttpUrl).orEmpty(),
             )
+            if (group !in grouped && grouped.size >= ChannelInput.MAX_GROUPS) {
+                throw IOException("Too many channel groups")
+            }
             grouped.getOrPut(group) { mutableListOf() }.add(tv)
         }
 
@@ -127,11 +134,6 @@ object ChannelDataRepository {
             throw IOException("Channel list has no usable entries")
         }
         return grouped
-    }
-
-    private fun isHttpUrl(value: String): Boolean {
-        val uri = Uri.parse(value)
-        return (uri.scheme == "https" || uri.scheme == "http") && !uri.host.isNullOrBlank()
     }
 
     private data class RemoteChannels(

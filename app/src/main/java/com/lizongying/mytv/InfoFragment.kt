@@ -6,8 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.lizongying.mytv.databinding.InfoBinding
 import com.lizongying.mytv.models.TVViewModel
 
@@ -17,6 +15,7 @@ class InfoFragment : Fragment() {
 
     private val handler = Handler()
     private val delay: Long = 3000
+    private var playbackActive = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,25 +28,30 @@ class InfoFragment : Fragment() {
     }
 
     fun show(tvViewModel: TVViewModel) {
+        val binding = _binding ?: return
         binding.textView.text = tvViewModel.getTV().title
 
         val logo = tvViewModel.getTV().logo
-        if (logo.isNotEmpty()) {
-            Glide.with(this).load(logo)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .centerInside().into(binding.infoLogo)
-        } else {
-            Glide.with(this).clear(binding.infoLogo)
-        }
+        LogoLoader.load(binding.infoLogo, logo)
 
         handler.removeCallbacks(removeRunnable)
-        view?.visibility = View.VISIBLE
-        handler.postDelayed(removeRunnable, delay)
+        binding.root.visibility = View.VISIBLE
+        if (playbackActive) handler.postDelayed(removeRunnable, delay)
+    }
+
+    fun setPlaybackActive(active: Boolean) {
+        playbackActive = active
+        handler.removeCallbacks(removeRunnable)
+        if (active) {
+            if (isResumed) handler.postDelayed(removeRunnable, delay)
+        } else {
+            _binding?.root?.visibility = View.VISIBLE
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        handler.postDelayed(removeRunnable, delay)
+        if (playbackActive) handler.postDelayed(removeRunnable, delay)
     }
 
     override fun onPause() {
@@ -56,10 +60,13 @@ class InfoFragment : Fragment() {
     }
 
     private val removeRunnable = Runnable {
-        view?.visibility = View.GONE
+        if (playbackActive) _binding?.root?.visibility = View.GONE
     }
 
     override fun onDestroyView() {
+        handler.removeCallbacks(removeRunnable)
+        (activity as? MainActivity)?.fragmentUnavailable("InfoFragment")
+        _binding?.infoLogo?.let(LogoLoader::clear)
         super.onDestroyView()
         _binding = null
     }

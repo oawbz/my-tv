@@ -75,7 +75,12 @@ class MainActivity : FragmentActivity() {
     }
 
     fun showInfoFragment(tvViewModel: TVViewModel) {
+        infoFragment.setPlaybackActive(false)
         infoFragment.show(tvViewModel)
+    }
+
+    fun setPlaybackActive(active: Boolean) {
+        infoFragment.setPlaybackActive(active)
     }
 
     fun reloadChannels(url: String, onResult: (Boolean) -> Unit) =

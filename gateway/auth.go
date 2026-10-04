@@ -38,7 +38,14 @@ func (g *gateway) withToken(rawURL, token string) string {
 	if len(g.tokens) == 0 {
 		return rawURL
 	}
-	return rawURL + "?" + tokenQueryKey + "=" + url.QueryEscape(token)
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return rawURL
+	}
+	query := u.Query()
+	query.Set(tokenQueryKey, token)
+	u.RawQuery = query.Encode()
+	return u.String()
 }
 
 func (g *gateway) cacheControl(publicValue string) string {
