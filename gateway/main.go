@@ -16,7 +16,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -41,10 +40,12 @@ type inputChannel struct {
 type channel struct {
 	inputChannel
 	key      string
+	tvgID    string
 	mu       sync.Mutex
-	ranked   []string
 	badUntil map[string]time.Time
 	quality  map[string]*sourceQuality
+	lastGood string
+	goodAt   time.Time
 }
 type apiChannel struct {
 	Name  string   `json:"name"`
@@ -59,30 +60,41 @@ type reference struct {
 	duration   time.Duration
 	expires    time.Time
 }
+type sourceSnapshot struct {
+	channels  []inputChannel
+	fetchedAt time.Time
+	retryAt   time.Time
+}
 type gateway struct {
-	mu           sync.RWMutex
-	refreshMu    sync.Mutex
-	channels     []*channel
-	byKey        map[string]*channel
-	refs         map[string]reference
-	lastRefSweep time.Time
-	loadedAt     time.Time
-	nextRetry    time.Time
-	sources      []string
-	base         string
-	userAgent    string
-	cacheTTL     time.Duration
-	client       *http.Client
-	probeClient  *http.Client
-	sharedMu     sync.Mutex
-	objects      map[string]*sharedObject
-	flights      map[string]*sharedFlight
-	streams      map[string]*streamHub
-	streamMeta   map[string]*sharedObject
-	cacheBytes   int
-	probeMu      sync.Mutex
-	probeResults map[string]probeResult
-	probeFlights map[string]*probeFlight
+	mu            sync.RWMutex
+	refreshMu     sync.Mutex
+	channels      []*channel
+	byKey         map[string]*channel
+	refs          map[string]reference
+	lastRefSweep  time.Time
+	loadedAt      time.Time
+	nextRetry     time.Time
+	sources       []string
+	catalog       *channelCatalog
+	configPath    string
+	configHash    [32]byte
+	rejectedHash  [32]byte
+	tokens        []string
+	sourceCacheMu sync.Mutex
+	sourceCache   map[string]sourceSnapshot
+	userAgent     string
+	cacheTTL      time.Duration
+	client        *http.Client
+	probeClient   *http.Client
+	sharedMu      sync.Mutex
+	objects       map[string]*sharedObject
+	flights       map[string]*sharedFlight
+	streams       map[string]*streamHub
+	streamMeta    map[string]*sharedObject
+	cacheBytes    int
+	probeMu       sync.Mutex
+	probeResults  map[string]probeResult
+	probeFlights  map[string]*probeFlight
 }
 
 func validURL(raw string) bool {
@@ -97,39 +109,93 @@ func (g *gateway) upstreamUA() string {
 }
 
 // ensureFresh is called only by channel listing and playback requests.
-// Remote M3U requests use a TTL; local files are reread on listing requests.
+// A stale remote playlist is refreshed in the background when channels are
+// already available. Local files are reread synchronously on listing requests.
 func (g *gateway) ensureFresh(ctx context.Context, onListing, force bool) error {
 	if len(g.sources) == 0 {
 		return nil
 	}
 	started := time.Now()
+	g.mu.RLock()
+	loaded := !g.loadedAt.IsZero()
+	g.mu.RUnlock()
+	async := loaded && !force
+	if onListing {
+		for _, source := range g.sources {
+			if !validURL(source) {
+				async = false
+				break
+			}
+		}
+	}
+	if async {
+		if !g.refreshMu.TryLock() {
+			return nil
+		}
+		if !g.refreshNeeded(started, onListing, false) {
+			g.refreshMu.Unlock()
+			return nil
+		}
+		go func() {
+			defer g.refreshMu.Unlock()
+			refreshCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+			defer cancel()
+			if err := g.runRefresh(refreshCtx, false); err != nil {
+				log.Printf("M3U background refresh: %v", err)
+			}
+		}()
+		return nil
+	}
 	g.refreshMu.Lock()
 	defer g.refreshMu.Unlock()
+	if !g.refreshNeeded(started, onListing, force) {
+		return nil
+	}
+	refreshCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
+	defer cancel()
+	return g.runRefresh(refreshCtx, force)
+}
+
+// refreshNeeded is called while refreshMu is held.
+func (g *gateway) refreshNeeded(started time.Time, onListing, force bool) bool {
 	g.mu.RLock()
 	loadedAt, nextRetry := g.loadedAt, g.nextRetry
 	g.mu.RUnlock()
 	now := time.Now()
 	if now.Before(nextRetry) {
-		return nil
+		return false
 	}
-	remote := validURL(g.sources[0])
-	if remote {
+	if loadedAt.After(started) {
+		return false
+	}
+	needed := loadedAt.IsZero() || force
+	if !needed {
 		ttl := g.cacheTTL
 		if ttl <= 0 {
 			ttl = 3 * time.Hour
 		}
-		if !force && !loadedAt.IsZero() && now.Sub(loadedAt) < ttl {
-			return nil
+		for _, source := range g.sources {
+			if !validURL(source) {
+				needed = needed || onListing
+				continue
+			}
+			g.sourceCacheMu.Lock()
+			snapshot := g.sourceCache[source]
+			g.sourceCacheMu.Unlock()
+			if (snapshot.fetchedAt.IsZero() || now.Sub(snapshot.fetchedAt) >= ttl || !snapshot.retryAt.IsZero()) && !now.Before(snapshot.retryAt) {
+				needed = true
+			}
 		}
-		if force && loadedAt.After(started) {
-			return nil
-		}
-	} else if (!onListing && !force) || loadedAt.After(started) {
-		return nil
 	}
-	refreshCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
-	defer cancel()
-	if err := g.refresh(refreshCtx); err != nil {
+	if !needed {
+		return false
+	}
+	return true
+}
+
+// runRefresh is called while refreshMu is held.
+func (g *gateway) runRefresh(ctx context.Context, force bool) error {
+	if err := g.refresh(ctx, force); err != nil {
 		g.mu.Lock()
 		g.nextRetry = time.Now().Add(30 * time.Second)
 		g.mu.Unlock()
@@ -140,9 +206,6 @@ func (g *gateway) ensureFresh(ctx context.Context, onListing, force bool) error 
 	g.nextRetry = time.Time{}
 	g.mu.Unlock()
 	return nil
-}
-func identity(c inputChannel) string {
-	return normalizedName(c.Name)
 }
 func keyFor(s string) string { h := sha256.Sum256([]byte(s)); return hex.EncodeToString(h[:8]) }
 
@@ -253,18 +316,95 @@ func (g *gateway) loadSource(ctx context.Context, source string) ([]inputChannel
 	return parseM3U(data, base)
 }
 
-func (g *gateway) refresh(ctx context.Context) error {
+func (g *gateway) loadSourceCached(ctx context.Context, source string, force bool) ([]inputChannel, error) {
+	if !validURL(source) {
+		return g.loadSource(ctx, source)
+	}
+	now := time.Now()
+	g.sourceCacheMu.Lock()
+	snapshot := g.sourceCache[source]
+	g.sourceCacheMu.Unlock()
+	ttl := g.cacheTTL
+	if ttl <= 0 {
+		ttl = 3 * time.Hour
+	}
+	if !force && snapshot.retryAt.IsZero() && !snapshot.fetchedAt.IsZero() && now.Sub(snapshot.fetchedAt) < ttl {
+		return snapshot.channels, nil
+	}
+	if now.Before(snapshot.retryAt) {
+		if !snapshot.fetchedAt.IsZero() {
+			return snapshot.channels, nil
+		}
+		return nil, fmt.Errorf("source retry delayed")
+	}
+	list, err := g.loadSource(ctx, source)
+	if err != nil {
+		log.Printf("source %s: %v", source, err)
+		snapshot.retryAt = time.Now().Add(30 * time.Second)
+		g.sourceCacheMu.Lock()
+		if g.sourceCache == nil {
+			g.sourceCache = make(map[string]sourceSnapshot)
+		}
+		g.sourceCache[source] = snapshot
+		g.sourceCacheMu.Unlock()
+		if !snapshot.fetchedAt.IsZero() {
+			return snapshot.channels, nil
+		}
+		return nil, err
+	}
+	g.sourceCacheMu.Lock()
+	if g.sourceCache == nil {
+		g.sourceCache = make(map[string]sourceSnapshot)
+	}
+	g.sourceCache[source] = sourceSnapshot{channels: list, fetchedAt: time.Now()}
+	g.sourceCacheMu.Unlock()
+	return list, nil
+}
+
+func (g *gateway) refresh(ctx context.Context, force ...bool) error {
+	forceLoad := len(force) > 0 && force[0]
+	catalog := g.catalog
+	if catalog == nil {
+		catalog = fallbackCatalog
+	}
+	passthrough := len(catalog.ordered) == 0
+	ordered := catalog.ordered
+	var discovered map[string]*catalogEntry
+	if passthrough {
+		ordered = nil
+		discovered = make(map[string]*catalogEntry)
+	}
 	merged := map[string]*channel{}
-	order := []string{}
 	succeeded := 0
-	for _, source := range g.sources {
-		list, err := g.loadSource(ctx, source)
-		if err != nil {
-			log.Printf("source %s: %v", source, err)
+	type loadResult struct {
+		list []inputChannel
+		err  error
+	}
+	results := make([]loadResult, len(g.sources))
+	sem := make(chan struct{}, 4)
+	var wg sync.WaitGroup
+	for i, source := range g.sources {
+		wg.Add(1)
+		go func(i int, source string) {
+			defer wg.Done()
+			select {
+			case sem <- struct{}{}:
+				defer func() { <-sem }()
+			case <-ctx.Done():
+				results[i].err = ctx.Err()
+				return
+			}
+			results[i].list, results[i].err = g.loadSourceCached(ctx, source, forceLoad)
+		}(i, source)
+	}
+	wg.Wait()
+	for i, source := range g.sources {
+		if results[i].err != nil {
+			log.Printf("source %s: %v", source, results[i].err)
 			continue
 		}
 		succeeded++
-		for _, item := range list {
+		for _, item := range results[i].list {
 			item.Name = strings.TrimSpace(item.Name)
 			if item.Name == "" {
 				continue
@@ -272,14 +412,32 @@ func (g *gateway) refresh(ctx context.Context) error {
 			if item.Group == "" {
 				item.Group = "其他"
 			}
-			id := identity(item)
-			ch := merged[id]
-			if ch == nil {
-				ch = &channel{inputChannel: inputChannel{Name: item.Name, Group: item.Group, Logo: item.Logo, ID: item.ID}, key: keyFor(id)}
-				merged[id] = ch
-				order = append(order, id)
+			identity := normalizedName(item.Name)
+			entry := catalog.byName[identity]
+			if passthrough {
+				entry = discovered[identity]
+				if entry == nil {
+					entry = &catalogEntry{id: item.Name, name: item.Name, group: item.Group, key: keyFor(identity)}
+					discovered[identity] = entry
+					ordered = append(ordered, entry)
+				}
 			}
-			if !validURL(ch.Logo) && validURL(item.Logo) {
+			if entry == nil {
+				continue
+			}
+			ch := merged[entry.id]
+			if ch == nil {
+				group := entry.group
+				if group == "" {
+					group = item.Group
+				}
+				ch = &channel{inputChannel: inputChannel{Name: entry.name, Group: group, Logo: entry.logo, ID: entry.id}, key: entry.key, tvgID: item.ID}
+				merged[entry.id] = ch
+			}
+			if ch.tvgID == "" {
+				ch.tvgID = item.ID
+			}
+			if entry.logo == "" && !validURL(ch.Logo) && validURL(item.Logo) {
 				ch.Logo = item.Logo
 			}
 			for _, raw := range item.URLs {
@@ -302,13 +460,13 @@ func (g *gateway) refresh(ctx context.Context) error {
 	if succeeded == 0 {
 		return errors.New("all sources failed")
 	}
-	result := make([]*channel, 0, len(order))
+	result := make([]*channel, 0, len(ordered))
 	g.mu.RLock()
 	old := g.byKey
 	g.mu.RUnlock()
-	for _, id := range order {
-		ch := merged[id]
-		if len(ch.URLs) == 0 {
+	for _, entry := range ordered {
+		ch := merged[entry.id]
+		if ch == nil || len(ch.URLs) == 0 {
 			continue
 		}
 		if prior := old[ch.key]; prior != nil {
@@ -323,12 +481,12 @@ func (g *gateway) refresh(ctx context.Context) error {
 					copy := *q
 					ch.quality[raw] = &copy
 				}
+				ch.lastGood, ch.goodAt = prior.lastGood, prior.goodAt
 			}
 			prior.mu.Unlock()
 		}
 		result = append(result, ch)
 	}
-	result = orderChannels(result)
 	byKey := make(map[string]*channel, len(result))
 	for _, ch := range result {
 		byKey[ch.key] = ch
@@ -342,11 +500,14 @@ func (g *gateway) refresh(ctx context.Context) error {
 }
 
 func (g *gateway) probeDirect(ctx context.Context, raw string) (time.Duration, error) {
+	manifestURL := strings.HasSuffix(strings.ToLower(strings.SplitN(raw, "?", 2)[0]), ".m3u8")
 	req, e := http.NewRequestWithContext(ctx, http.MethodGet, raw, nil)
 	if e != nil {
 		return 0, e
 	}
-	req.Header.Set("Range", "bytes=0-1023")
+	if !manifestURL {
+		req.Header.Set("Range", "bytes=0-1023")
+	}
 	req.Header.Set("User-Agent", g.upstreamUA())
 	start := time.Now()
 	resp, e := g.probeClient.Do(req)
@@ -356,6 +517,21 @@ func (g *gateway) probeDirect(ctx context.Context, raw string) (time.Duration, e
 	defer resp.Body.Close()
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
 		return 0, fmt.Errorf("HTTP %d", resp.StatusCode)
+	}
+	if manifestURL {
+		data, err := io.ReadAll(io.LimitReader(resp.Body, maxManifest+1))
+		if err != nil {
+			return 0, err
+		}
+		if len(data) > maxManifest || !bytes.HasPrefix(bytes.TrimSpace(data), []byte("#EXTM3U")) {
+			return 0, errors.New("invalid HLS manifest")
+		}
+		obj := &sharedObject{data: data, manifest: true, status: resp.StatusCode, url: resp.Request.URL, header: resp.Header.Clone(), fetchDuration: time.Since(start), expires: time.Now().Add(time.Second)}
+		key := g.upstreamUA() + "\x00" + raw + "\x00\x00"
+		g.sharedMu.Lock()
+		g.storeObjectLocked(key, obj)
+		g.sharedMu.Unlock()
+		return time.Since(start), nil
 	}
 	var first [512]byte
 	n, e := resp.Body.Read(first[:])
@@ -371,64 +547,6 @@ func (g *gateway) probeDirect(ctx context.Context, raw string) (time.Duration, e
 	}
 	return time.Since(start), nil
 }
-func (g *gateway) ranked(ctx context.Context, ch *channel) []string {
-	ch.mu.Lock()
-	defer ch.mu.Unlock()
-	type result struct {
-		url      string
-		duration time.Duration
-		ok       bool
-	}
-	results := make([]result, len(ch.URLs))
-	sem := make(chan struct{}, 4)
-	var wg sync.WaitGroup
-	for i, raw := range ch.URLs {
-		wg.Add(1)
-		go func(i int, raw string) {
-			defer wg.Done()
-			select {
-			case sem <- struct{}{}:
-				defer func() { <-sem }()
-			case <-ctx.Done():
-				return
-			}
-			pctx, cancel := context.WithTimeout(ctx, 4*time.Second)
-			defer cancel()
-			d, e := g.probe(pctx, raw)
-			if e != nil {
-				g.invalidateShared(raw)
-			}
-			results[i] = result{raw, d, e == nil}
-		}(i, raw)
-	}
-	wg.Wait()
-	sort.SliceStable(results, func(i, j int) bool {
-		if results[i].ok != results[j].ok {
-			return results[i].ok
-		}
-		return results[i].duration < results[j].duration
-	})
-	ranked := make([]string, 0, len(results))
-	quarantined := make([]string, 0)
-	for _, r := range results {
-		if r.ok {
-			if time.Now().Before(ch.badUntil[r.url]) {
-				quarantined = append(quarantined, r.url)
-			} else {
-				ranked = append(ranked, r.url)
-			}
-		}
-	}
-	if len(ranked) == 0 {
-		if len(quarantined) > 0 {
-			ranked = quarantined
-		} else {
-			ranked = append(ranked, ch.URLs...)
-		}
-	}
-	ch.ranked = ranked
-	return append([]string(nil), ranked...)
-}
 func (g *gateway) demote(channelKey, sourceURL string) {
 	g.mu.RLock()
 	ch := g.byKey[channelKey]
@@ -442,12 +560,6 @@ func (g *gateway) demote(channelKey, sourceURL string) {
 		ch.badUntil = map[string]time.Time{}
 	}
 	ch.badUntil[sourceURL] = time.Now().Add(2 * time.Minute)
-	for i, raw := range ch.ranked {
-		if raw == sourceURL {
-			ch.ranked = append(ch.ranked[:i], ch.ranked[i+1:]...)
-			return
-		}
-	}
 }
 func (g *gateway) register(raw, channelKey, sourceURL string, duration time.Duration) string {
 	var b [18]byte
@@ -467,20 +579,17 @@ func (g *gateway) register(raw, channelKey, sourceURL string, duration time.Dura
 	g.mu.Unlock()
 	return token
 }
-func (g *gateway) publicBase(c *gin.Context) string {
-	if g.base != "" {
-		return g.base
-	}
+func requestBase(c *gin.Context) string {
 	scheme := "http"
 	if c.Request.TLS != nil {
 		scheme = "https"
 	}
 	return scheme + "://" + c.Request.Host
 }
-func (g *gateway) resourceURL(base, raw, channelKey, sourceURL string, duration time.Duration) string {
-	return base + "/resource/" + g.register(raw, channelKey, sourceURL, duration)
+func (g *gateway) resourceURL(base, raw, channelKey, sourceURL, accessToken string, duration time.Duration) string {
+	return g.withToken(base+"/resource/"+g.register(raw, channelKey, sourceURL, duration), accessToken)
 }
-func (g *gateway) rewrite(data []byte, upstream *url.URL, base, channelKey, sourceURL string) ([]byte, int) {
+func (g *gateway) rewrite(data []byte, upstream *url.URL, base, channelKey, sourceURL, accessToken string) ([]byte, int) {
 	lines := strings.Split(string(data), "\n")
 	valid := 0
 	var segmentDuration time.Duration
@@ -503,14 +612,14 @@ func (g *gateway) rewrite(data []byte, upstream *url.URL, base, channelKey, sour
 					if strings.HasPrefix(trimmed, "#EXT-X-MEDIA:") || strings.HasPrefix(trimmed, "#EXT-X-I-FRAME-STREAM-INF:") || strings.HasPrefix(trimmed, "#EXT-X-IMAGE-STREAM-INF:") {
 						valid++
 					}
-					return `URI="` + g.resourceURL(base, u.String(), channelKey, sourceURL, 0) + `"`
+					return `URI="` + g.resourceURL(base, u.String(), channelKey, sourceURL, accessToken, 0) + `"`
 				})
 			}
 		} else {
 			u, e := upstream.Parse(trimmed)
 			if e == nil && validURL(u.String()) {
 				valid++
-				lines[i] = g.resourceURL(base, u.String(), channelKey, sourceURL, segmentDuration)
+				lines[i] = g.resourceURL(base, u.String(), channelKey, sourceURL, accessToken, segmentDuration)
 			}
 			segmentDuration = 0
 		}
@@ -547,6 +656,9 @@ func (g *gateway) relay(c *gin.Context, raw, channelKey, sourceURL string, segme
 		if obj.hub == nil {
 			break
 		}
+		if raw == sourceURL && channelKey != "" {
+			g.markGood(channelKey, raw)
+		}
 		if err := obj.hub.serve(c, obj); err == nil {
 			return nil
 		} else if attempt == 1 {
@@ -555,7 +667,7 @@ func (g *gateway) relay(c *gin.Context, raw, channelKey, sourceURL string, segme
 	}
 	if obj.manifest {
 		var valid int
-		data, valid := g.rewrite(obj.data, obj.url, g.publicBase(c), channelKey, sourceURL)
+		data, valid := g.rewrite(obj.data, obj.url, requestBase(c), channelKey, sourceURL, c.Query(tokenQueryKey))
 		if valid == 0 {
 			g.invalidateShared(raw)
 			return errors.New("HLS manifest has no playable URLs")
@@ -573,46 +685,40 @@ func (g *gateway) relay(c *gin.Context, raw, channelKey, sourceURL string, segme
 	c.Data(obj.status, obj.header.Get("Content-Type"), obj.data)
 	return nil
 }
-func (g *gateway) playCandidates(c *gin.Context, ch *channel) bool {
-	for _, raw := range g.ranked(c.Request.Context(), ch) {
-		if err := g.relay(c, raw, ch.key, raw, 0); err == nil {
-			return true
-		} else {
-			g.demote(ch.key, raw)
-			log.Printf("play %s: %v", ch.Name, err)
-			if c.Writer.Written() {
-				return true
-			}
-		}
-	}
-	return false
-}
 func (g *gateway) router() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Recovery())
-	r.GET("/healthz", func(c *gin.Context) {
-		g.mu.RLock()
-		n := len(g.channels)
-		g.mu.RUnlock()
-		c.JSON(200, gin.H{"channels": n})
-	})
+	r.Use(g.requireToken)
+	r.GET("/", g.serveHome)
 	r.GET("/channels.json", func(c *gin.Context) {
-		if err := g.ensureFresh(c.Request.Context(), true, false); err != nil {
-			log.Printf("M3U refresh: %v", err)
-		}
-		base := g.publicBase(c)
-		g.mu.RLock()
-		chs := append([]*channel(nil), g.channels...)
-		g.mu.RUnlock()
+		chs := g.listedChannels(c)
+		base := requestBase(c)
 		out := make([]apiChannel, 0, len(chs))
 		for _, ch := range chs {
-			logo := base + "/logo/" + ch.key
-			out = append(out, apiChannel{ch.Name, ch.Group, []string{base + "/play/" + ch.key + "/index.m3u8"}, logo})
+			logo := g.withToken(base+"/logo/"+ch.key, c.Query(tokenQueryKey))
+			play := g.withToken(base+"/play/"+ch.key+"/index.m3u8", c.Query(tokenQueryKey))
+			out = append(out, apiChannel{ch.Name, ch.Group, []string{play}, logo})
 		}
-		c.Header("Cache-Control", "public, max-age=60")
+		c.Header("Cache-Control", g.cacheControl("public, max-age=60"))
 		c.JSON(200, gin.H{"version": 1, "channels": out})
 	})
+	r.GET("/channels.m3u", func(c *gin.Context) {
+		chs := g.listedChannels(c)
+		base := requestBase(c)
+		var playlist strings.Builder
+		playlist.WriteString("#EXTM3U\n")
+		for _, ch := range chs {
+			name := m3uField(ch.Name)
+			group := m3uField(ch.Group)
+			logo := g.withToken(base+"/logo/"+ch.key, c.Query(tokenQueryKey))
+			play := g.withToken(base+"/play/"+ch.key+"/index.m3u8", c.Query(tokenQueryKey))
+			fmt.Fprintf(&playlist, "#EXTINF:-1 tvg-id=\"%s\" tvg-name=\"%s\" tvg-logo=\"%s\" group-title=\"%s\",%s\n%s\n", m3uField(ch.tvgID), name, logo, group, name, play)
+		}
+		c.Header("Cache-Control", g.cacheControl("public, max-age=60"))
+		c.Data(http.StatusOK, "audio/x-mpegurl; charset=utf-8", []byte(playlist.String()))
+	})
 	r.GET("/play/:key/index.m3u8", func(c *gin.Context) {
+		g.ensureCatalogFresh(c.Request.Context())
 		if err := g.ensureFresh(c.Request.Context(), false, false); err != nil {
 			log.Printf("M3U refresh: %v", err)
 		}
@@ -640,6 +746,7 @@ func (g *gateway) router() *gin.Engine {
 		}
 	})
 	r.GET("/logo/:key", func(c *gin.Context) {
+		g.ensureCatalogFresh(c.Request.Context())
 		g.mu.RLock()
 		ch := g.byKey[c.Param("key")]
 		g.mu.RUnlock()
@@ -678,7 +785,12 @@ func main() {
 	transport.DisableKeepAlives = true
 	transport.ResponseHeaderTimeout = 10 * time.Second
 	cacheTTL, _ := time.ParseDuration(cfg.CacheDuration)
-	g := &gateway{sources: []string{cfg.M3U}, base: cfg.PublicBase, userAgent: cfg.UserAgent, cacheTTL: cacheTTL, client: &http.Client{Transport: transport}, probeClient: &http.Client{Transport: transport, Timeout: 4 * time.Second}, byKey: map[string]*channel{}, refs: map[string]reference{}}
-	log.Printf("listening on %s, public base %s", cfg.Listen, g.base)
+	catalog, _ := buildCatalog(cfg.Channels)
+	data, err := os.ReadFile("config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	g := &gateway{sources: cfg.sources(), catalog: catalog, configPath: "config.json", configHash: sha256.Sum256(data), tokens: cfg.Tokens, userAgent: cfg.UserAgent, cacheTTL: cacheTTL, client: &http.Client{Transport: transport}, probeClient: &http.Client{Transport: transport, Timeout: 4 * time.Second}, byKey: map[string]*channel{}, refs: map[string]reference{}}
+	log.Printf("listening on %s", cfg.Listen)
 	log.Fatal(http.ListenAndServe(cfg.Listen, g.router()))
 }

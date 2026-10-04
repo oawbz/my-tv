@@ -23,7 +23,8 @@ class SettingFragment : DialogFragment() {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setLayout(
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT
+                if (SP.mobileMode) (resources.displayMetrics.heightPixels * 0.9f).toInt()
+                else WindowManager.LayoutParams.WRAP_CONTENT
             )
             addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -43,6 +44,22 @@ class SettingFragment : DialogFragment() {
         _binding = SettingBinding.inflate(inflater, container, false)
 
         binding.channelsUrl.setText(SP.channelsUrl)
+        binding.switchMobileMode.run {
+            isChecked = SP.mobileMode
+            setOnCheckedChangeListener { _, checked ->
+                (activity as? MainActivity)?.setInteractionMode(checked)
+                dismiss()
+            }
+        }
+        binding.switchMobileSwipeChannel.run {
+            visibility = if (SP.mobileMode) View.VISIBLE else View.GONE
+            isChecked = SP.mobileSwipeChannel
+            setOnCheckedChangeListener { _, checked -> SP.mobileSwipeChannel = checked }
+        }
+        binding.closeMobileSettings.apply {
+            visibility = if (SP.mobileMode) View.VISIBLE else View.GONE
+            setOnClickListener { dismiss() }
+        }
         binding.saveChannelsUrl.setOnClickListener {
             val url = binding.channelsUrl.text.toString().trim()
             if (url.isBlank()) {

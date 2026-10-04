@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"github.com/gin-gonic/gin"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -147,23 +146,17 @@ func TestFallbackWhenFastestFails(t *testing.T) {
 		http.NotFound(w, r)
 	}))
 	defer upstream.Close()
-	g := &gateway{client: &http.Client{Timeout: time.Second}, probeClient: &http.Client{Timeout: time.Second}, refs: map[string]reference{}}
-	ch := &channel{inputChannel: inputChannel{URLs: []string{upstream.URL + "/flaky", upstream.URL + "/stable"}}}
-	ranked := g.ranked(context.Background(), ch)
-	if ranked[0] != upstream.URL+"/flaky" {
-		t.Fatalf("ranking: %v", ranked)
+	ch := &channel{inputChannel: inputChannel{URLs: []string{upstream.URL + "/flaky", upstream.URL + "/stable"}}, key: "one"}
+	g := &gateway{client: &http.Client{Timeout: time.Second}, probeClient: &http.Client{Timeout: time.Second}, refs: map[string]reference{}, byKey: map[string]*channel{"one": ch}}
+	server := httptest.NewServer(g.router())
+	defer server.Close()
+	resp, err := http.Get(server.URL + "/play/one/index.m3u8")
+	if err != nil {
+		t.Fatal(err)
 	}
-	g.base = "http://gateway.test"
-	w := httptest.NewRecorder()
-	c, _ := gin.CreateTestContext(w)
-	c.Request = httptest.NewRequest("GET", "/", nil)
-	if e := g.relay(c, ranked[0], "", ""); e == nil {
-		t.Fatal("expected failed source")
-	}
-	if e := g.relay(c, ranked[1], "", ""); e != nil {
-		t.Fatal(e)
-	}
-	if !strings.Contains(w.Body.String(), "/resource/") {
-		t.Fatal(w.Body.String())
+	defer resp.Body.Close()
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode != http.StatusOK || !strings.Contains(string(body), "/resource/") || ch.lastGood != upstream.URL+"/stable" {
+		t.Fatalf("fallback failed: status=%d source=%s body=%s", resp.StatusCode, ch.lastGood, body)
 	}
 }

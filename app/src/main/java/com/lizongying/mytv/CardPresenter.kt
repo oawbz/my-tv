@@ -1,6 +1,7 @@
 package com.lizongying.mytv
 
 import android.view.ContextThemeWrapper
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.leanback.widget.ImageCardView
@@ -10,17 +11,29 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.lizongying.mytv.models.TVViewModel
 
-class CardPresenter : Presenter() {
+class CardPresenter(private val onTouchChannel: (TVViewModel) -> Unit) : Presenter() {
     override fun onCreateViewHolder(parent: ViewGroup): ViewHolder {
         val card = ImageCardView(ContextThemeWrapper(parent.context, R.style.CustomImageCardTheme))
         card.isFocusable = true
         card.isFocusableInTouchMode = true
+        card.setOnTouchListener { view, event ->
+            when (event.actionMasked) {
+                MotionEvent.ACTION_DOWN -> false
+                MotionEvent.ACTION_UP -> {
+                    val item = view.tag as? TVViewModel
+                    if (item != null) onTouchChannel(item)
+                    true
+                }
+                else -> false
+            }
+        }
         return ViewHolder(card)
     }
 
     override fun onBindViewHolder(viewHolder: ViewHolder, item: Any?) {
         val tv = (item as TVViewModel).getTV()
         val card = viewHolder.view as ImageCardView
+        card.tag = item
         card.titleText = tv.title
         card.contentText = tv.channel
         card.setMainImageDimensions(300, 101)

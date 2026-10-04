@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.leanback.widget.ImageCardView
 import com.lizongying.mytv.models.TVViewModel
+import kotlin.math.abs
 
 
 class MainActivity : FragmentActivity() {
@@ -25,14 +26,15 @@ class MainActivity : FragmentActivity() {
     private lateinit var mainFragment: MainFragment
     private lateinit var infoFragment: InfoFragment
     private lateinit var settingFragment: SettingFragment
+    private lateinit var mobileControls: MobileControls
 
     private var doubleBackToExitPressedOnce = false
 
     private lateinit var gestureDetector: GestureDetector
+    private var touchStartedOnChannelCard = false
 
     private val handler = Handler()
     private val delayHideMain: Long = 10000
-    private val delayHideSetting: Long = 10000
     private var channelNumberInput = ""
 
     private val channelNumberTimeout = Runnable {
@@ -53,6 +55,7 @@ class MainActivity : FragmentActivity() {
         settingFragment = restored.filterIsInstance<SettingFragment>().firstOrNull() ?: SettingFragment()
 
         setContentView(R.layout.activity_main)
+        mobileControls = MobileControls(this, findViewById(R.id.mobile_controls))
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -67,6 +70,7 @@ class MainActivity : FragmentActivity() {
         }
         fragmentTransaction.hide(mainFragment).commit()
         gestureDetector = GestureDetector(this, GestureListener())
+        mobileControls.setEnabled(SP.mobileMode)
 
     }
 
@@ -83,7 +87,28 @@ class MainActivity : FragmentActivity() {
 
     fun play(tvViewModel: TVViewModel) {
         playerFragment.play(tvViewModel)
-        mainFragment.view?.requestFocus()
+        mobileControls.setChannel(tvViewModel)
+        if (!SP.mobileMode) mainFragment.view?.requestFocus()
+    }
+
+    fun updateMobileChannels(groups: List<Pair<String, List<TVViewModel>>>) {
+        mobileControls.setGroups(groups)
+    }
+
+    fun playMobileChannel(channel: TVViewModel) {
+        mainFragment.playMobileChannel(channel)
+    }
+
+    fun openMobileSettings() {
+        showSetting()
+    }
+
+    fun setInteractionMode(mobile: Boolean) {
+        SP.mobileMode = mobile
+        handler.removeCallbacks(hideMain)
+        handler.removeCallbacks(hideSetting)
+        if (mobile && !mainFragment.isHidden) hideMainFragment()
+        mobileControls.setEnabled(mobile)
     }
 
     fun showChannelSwitching() {
@@ -99,27 +124,30 @@ class MainActivity : FragmentActivity() {
     }
 
     fun switchMainFragment() {
-        val transaction = supportFragmentManager.beginTransaction()
-
         if (mainFragment.isHidden) {
-            transaction.show(mainFragment)
-            mainActive()
+            mainFragment.focusPlayingChannel()
+            showChannelList()
         } else {
             hideMainFragment()
-            return
         }
+    }
 
-        transaction.commit()
+    fun showChannelList() {
+        if (SP.mobileMode) return
+        if (mainFragment.isHidden) {
+            supportFragmentManager.beginTransaction().show(mainFragment).commit()
+        }
+        mainActive()
     }
 
     fun mainActive() {
+        if (SP.mobileMode) return
         handler.removeCallbacks(hideMain)
         handler.postDelayed(hideMain, delayHideMain)
     }
 
     fun settingDelayHide() {
         handler.removeCallbacks(hideSetting)
-        handler.postDelayed(hideSetting, delayHideSetting)
     }
 
     private val hideMain = Runnable {
@@ -156,6 +184,11 @@ class MainActivity : FragmentActivity() {
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        if (SP.mobileMode) return super.dispatchTouchEvent(event)
+        if (event.actionMasked == MotionEvent.ACTION_DOWN) {
+            touchStartedOnChannelCard = !mainFragment.isHidden &&
+                isPointOnChannelCard(mainFragment.view, event.rawX, event.rawY)
+        }
         gestureDetector.onTouchEvent(event)
         return super.dispatchTouchEvent(event)
     }
@@ -163,6 +196,12 @@ class MainActivity : FragmentActivity() {
     private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
 
         override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+            // A card click hides the list immediately. Remember where the touch started so the
+            // delayed gesture callback does not mistake that same tap for a video-area tap.
+            if (touchStartedOnChannelCard) {
+                touchStartedOnChannelCard = false
+                return true
+            }
             if (mainFragment.isHidden) {
                 switchMainFragment()
             } else if (!isPointOnChannelCard(mainFragment.view, e.rawX, e.rawY)) {
@@ -182,6 +221,9 @@ class MainActivity : FragmentActivity() {
             velocityX: Float,
             velocityY: Float
         ): Boolean {
+            if (abs(velocityX) >= abs(velocityY)) {
+                return super.onFling(e1, e2, velocityX, velocityY)
+            }
             if (velocityY > 0) {
                 if (mainFragment.isHidden) {
                     prev()
@@ -213,14 +255,13 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun showSetting() {
-        if (!mainFragment.isHidden) {
+        if (!SP.mobileMode && !mainFragment.isHidden) {
             return
         }
 
         Log.i(TAG, "settingFragment ${settingFragment.isVisible}")
         if (!settingFragment.isVisible) {
             settingFragment.show(supportFragmentManager, "setting")
-            settingDelayHide()
         } else {
             handler.removeCallbacks(hideSetting)
             settingFragment.dismiss()
@@ -287,6 +328,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun back() {
+        if (SP.mobileMode && mobileControls.closeOverlay()) return
         if (!mainFragment.isHidden) {
             hideMainFragment()
             return
@@ -307,6 +349,13 @@ class MainActivity : FragmentActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         Log.i(TAG, "keyCode $keyCode, event $event")
+        if (SP.mobileMode) {
+            if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE) {
+                back()
+                return true
+            }
+            return super.onKeyDown(keyCode, event)
+        }
         val digit = keyCode.toChannelDigit()
         if (digit != null && SP.channelNumberInput) {
             if (event?.repeatCount == 0) handleChannelDigit(digit)
@@ -354,11 +403,31 @@ class MainActivity : FragmentActivity() {
             }
 
             KeyEvent.KEYCODE_ENTER -> {
-                switchMainFragment()
+                if (mainFragment.isHidden) {
+                    switchMainFragment()
+                } else {
+                    mainFragment.playSelectedChannel()
+                }
+                return true
             }
 
             KeyEvent.KEYCODE_DPAD_CENTER -> {
-                switchMainFragment()
+                if (mainFragment.isHidden) {
+                    switchMainFragment()
+                } else {
+                    mainFragment.playSelectedChannel()
+                }
+                return true
+            }
+
+            KeyEvent.KEYCODE_DPAD_LEFT -> {
+                mainFragment.moveChannelSelection(-1)
+                return true
+            }
+
+            KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                mainFragment.moveChannelSelection(1)
+                return true
             }
 
             KeyEvent.KEYCODE_DPAD_UP -> {
@@ -390,7 +459,7 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         Log.i(TAG, "onResume")
         super.onResume()
-        if (!mainFragment.isHidden) {
+        if (!SP.mobileMode && !mainFragment.isHidden) {
             handler.postDelayed(hideMain, delayHideMain)
         }
     }
@@ -402,6 +471,7 @@ class MainActivity : FragmentActivity() {
         playerFragment.hideChannelNumber()
         handler.removeCallbacks(hideMain)
         handler.removeCallbacks(hideSetting)
+        mobileControls.closeAll()
     }
 
     private companion object {

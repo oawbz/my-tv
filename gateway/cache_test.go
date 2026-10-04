@@ -56,10 +56,10 @@ func TestRemoteM3UOnDemandCacheAndUserAgent(t *testing.T) {
 		}
 		return r
 	}
-	r := get("/healthz")
+	r := get("/")
 	r.Body.Close()
 	if fetches.Load() != 0 {
-		t.Fatal("health check fetched M3U")
+		t.Fatal("home page fetched M3U")
 	}
 	r = get("/channels.json")
 	var doc struct {
@@ -91,9 +91,11 @@ func TestRemoteM3UOnDemandCacheAndUserAgent(t *testing.T) {
 	if fetches.Load() != 1 {
 		t.Fatal("playback caused refresh before TTL")
 	}
-	g.mu.Lock()
-	g.loadedAt = time.Now().Add(-4 * time.Hour)
-	g.mu.Unlock()
+	g.sourceCacheMu.Lock()
+	snapshot := g.sourceCache[upstream.URL+"/channels.m3u"]
+	snapshot.fetchedAt = time.Now().Add(-4 * time.Hour)
+	g.sourceCache[upstream.URL+"/channels.m3u"] = snapshot
+	g.sourceCacheMu.Unlock()
 	if fetches.Load() != 1 {
 		t.Fatal("background refresh")
 	}
@@ -115,15 +117,27 @@ func TestRemoteM3UOnDemandCacheAndUserAgent(t *testing.T) {
 		t.Fatalf("concurrent refreshes: %d", fetches.Load())
 	}
 	broken.Store(true)
-	g.mu.Lock()
-	g.loadedAt = time.Now().Add(-4 * time.Hour)
-	g.mu.Unlock()
+	g.sourceCacheMu.Lock()
+	snapshot = g.sourceCache[upstream.URL+"/channels.m3u"]
+	snapshot.fetchedAt = time.Now().Add(-4 * time.Hour)
+	g.sourceCache[upstream.URL+"/channels.m3u"] = snapshot
+	g.sourceCacheMu.Unlock()
 	r = get("/channels.json")
 	var stale struct {
 		Channels []apiChannel `json:"channels"`
 	}
 	json.NewDecoder(r.Body).Decode(&stale)
 	r.Body.Close()
+	deadline := time.Now().Add(time.Second)
+	for time.Now().Before(deadline) {
+		g.sourceCacheMu.Lock()
+		retryAt := g.sourceCache[upstream.URL+"/channels.m3u"].retryAt
+		g.sourceCacheMu.Unlock()
+		if fetches.Load() == 3 && !retryAt.IsZero() {
+			break
+		}
+		time.Sleep(10 * time.Millisecond)
+	}
 	if fetches.Load() != 3 || len(stale.Channels) != 1 {
 		t.Fatalf("stale cache: fetches=%d channels=%d", fetches.Load(), len(stale.Channels))
 	}

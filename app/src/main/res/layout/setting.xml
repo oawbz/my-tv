@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/dialog"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:fillViewport="true"
     >
     <LinearLayout
         android:layout_width="320dp"
@@ -47,6 +48,19 @@
             android:layout_height="wrap_content"
             android:text="保存并重新加载" />
         <Switch
+            android:id="@+id/switch_mobile_mode"
+            android:text="手机模式（横屏触控）"
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Switch
+            android:id="@+id/switch_mobile_swipe_channel"
+            android:text="上下滑动换台"
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+        <Switch
             android:id="@+id/switch_channel_reversal"
             android:text="@string/title_channel_reversal"
             android:layout_marginTop="2dp"
@@ -64,5 +78,11 @@
             android:layout_marginTop="2dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/close_mobile_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="关闭"
+            android:visibility="gone" />
     </LinearLayout>
-</FrameLayout>
+</ScrollView>

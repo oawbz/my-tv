@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-func TestPlaybackProbesEveryRequestAndRepairsChangedM3U(t *testing.T) {
+func TestPlaybackReusesGoodSourceAndRepairsChangedM3U(t *testing.T) {
 	var changed atomic.Bool
 	var playlistLoads atomic.Int32
 	var oldRequests atomic.Int32
@@ -74,13 +74,13 @@ func TestPlaybackProbesEveryRequestAndRepairsChangedM3U(t *testing.T) {
 	}
 	play()
 	first := oldRequests.Load()
-	if first < 2 {
-		t.Fatalf("not probed: %d", first)
+	if first != 1 {
+		t.Fatalf("single source should be fetched once: %d", first)
 	}
 	time.Sleep(600 * time.Millisecond)
 	play()
-	if oldRequests.Load() <= first {
-		t.Fatal("second playback did not probe")
+	if oldRequests.Load() > first+1 {
+		t.Fatal("second playback made redundant requests")
 	}
 	if playlistLoads.Load() != 1 {
 		t.Fatal("playlist refreshed before TTL")

@@ -38,9 +38,7 @@ func TestFailedSegmentSwitchesOnNextPlaybackRequest(t *testing.T) {
 			w.Header().Set("Content-Type", "application/vnd.apple.mpegurl")
 			io.WriteString(w, "#EXTM3U\n#EXTINF:2,\na.ts\n")
 		case "/b.m3u8":
-			if r.Header.Get("Range") != "" {
-				time.Sleep(30 * time.Millisecond)
-			}
+			time.Sleep(30 * time.Millisecond)
 			w.Header().Set("Content-Type", "application/vnd.apple.mpegurl")
 			io.WriteString(w, "#EXTM3U\n#EXTINF:2,\nb.ts\n")
 		case "/a.ts":

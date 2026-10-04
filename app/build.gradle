@@ -16,8 +16,8 @@ android {
         minSdk 19
         multiDexEnabled true
         targetSdk 33
-        versionCode VersionCode()
-        versionName VersionName()
+        versionCode project.findProperty('tvVersionCode')?.toInteger() ?: VersionCode()
+        versionName project.findProperty('tvVersionName')?.toString() ?: VersionName()
 
     }
 

@@ -3,8 +3,11 @@ package com.lizongying.mytv
 import android.os.Bundle
 import android.util.Log
 import android.app.AlertDialog
+import android.view.View
+import android.view.ViewGroup
 import androidx.leanback.app.BrowseSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
+import androidx.leanback.widget.BaseGridView
 import androidx.leanback.widget.HeaderItem
 import androidx.leanback.widget.ListRow
 import androidx.leanback.widget.ListRowPresenter
@@ -14,6 +17,7 @@ import androidx.leanback.widget.OnItemViewSelectedListener
 import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.Row
 import androidx.leanback.widget.RowPresenter
+import androidx.leanback.widget.VerticalGridView
 import androidx.lifecycle.lifecycleScope
 import com.lizongying.mytv.models.TVViewModel
 import kotlinx.coroutines.CancellationException
@@ -83,6 +87,7 @@ class MainFragment : BrowseSupportFragment() {
             if (generation != loadGeneration) return@launch
             val hadChannels = tvViewModels.isNotEmpty()
             loadRows(channels)
+            (activity as? MainActivity)?.updateMobileChannels(mobileGroups())
             if (onResult != null) SP.channelsUrl = url
             (activity as MainActivity).fragmentReady("MainFragment")
             if (onResult != null && hadChannels) {
@@ -112,7 +117,7 @@ class MainFragment : BrowseSupportFragment() {
         val rowsAdapter = ArrayObjectAdapter(ListRowPresenter())
         tvViewModels.clear()
 
-        val cardPresenter = CardPresenter()
+        val cardPresenter = CardPresenter(::playChannelFromTouch)
 
         var idx: Long = 0
         for ((k, v) in channels) {
@@ -152,11 +157,15 @@ class MainFragment : BrowseSupportFragment() {
             row: Row
         ) {
             if (item is TVViewModel) {
-                itemPosition = tvViewModels.indexOf(item)
-                playChannel(item)
-                (activity as? MainActivity)?.switchMainFragment()
+                playChannelFromTouch(item)
             }
         }
+    }
+
+    private fun playChannelFromTouch(channel: TVViewModel) {
+        itemPosition = tvViewModels.indexOf(channel).takeIf { it >= 0 } ?: itemPosition
+        playChannel(channel)
+        (activity as? MainActivity)?.hideChannelList()
     }
 
     private inner class ItemViewSelectedListener : OnItemViewSelectedListener {
@@ -165,9 +174,84 @@ class MainFragment : BrowseSupportFragment() {
             rowViewHolder: RowPresenter.ViewHolder, row: Row
         ) {
             if (item is TVViewModel) {
+                itemPosition = tvViewModels.indexOf(item).takeIf { it >= 0 } ?: itemPosition
                 (activity as MainActivity).mainActive()
             }
         }
+    }
+
+    fun focusPlayingChannel() {
+        val playingPosition = tvViewModels.indexOfFirst {
+            channelKey(it.getTV()) == SP.selectedChannel
+        }
+        if (playingPosition >= 0) itemPosition = playingPosition
+        focusChannelAt(itemPosition)
+    }
+
+    fun moveChannelSelection(direction: Int) {
+        view?.post {
+            if (tvViewModels.isEmpty()) return@post
+            val playingPosition = tvViewModels.indexOfFirst {
+                channelKey(it.getTV()) == SP.selectedChannel
+            }
+            val currentPosition = if (isHidden || playingPosition < 0) {
+                playingPosition.takeIf { it >= 0 } ?: itemPosition
+            } else {
+                itemPosition
+            }
+            itemPosition = (currentPosition + direction).coerceIn(0, tvViewModels.lastIndex)
+            (activity as? MainActivity)?.showChannelList()
+            focusChannelAt(itemPosition)
+        }
+    }
+
+    fun playSelectedChannel() {
+        val selected = tvViewModels.getOrNull(itemPosition) ?: return
+        playChannel(selected)
+        (activity as? MainActivity)?.hideChannelList()
+    }
+
+    fun playMobileChannel(channel: TVViewModel) {
+        val position = tvViewModels.indexOf(channel)
+        if (position < 0) return
+        itemPosition = position
+        playChannel(channel)
+    }
+
+    private fun mobileGroups(): List<Pair<String, List<TVViewModel>>> =
+        tvViewModels.groupBy { it.getTV().channel }.map { it.key to it.value }
+
+    private fun focusChannelAt(position: Int) {
+        val channel = tvViewModels.getOrNull(position) ?: return
+        val rowPosition = channel.getRowPosition()
+        val itemPositionInRow = channel.getItemPosition()
+        val task = SelectItemViewHolderTask(itemPositionInRow)
+        setSelectedPosition(rowPosition, true, task)
+
+        // Keep one category row visible above the selected channel when possible, so the
+        // user can immediately navigate upward from the default selection.
+        if (rowPosition > 0) {
+            view?.post {
+                val grid = findVerticalGridView(getRowsSupportFragment()?.view) ?: return@post
+                val rowView = grid.findViewHolderForAdapterPosition(rowPosition)?.itemView
+                    ?: return@post
+                if (rowView.height <= 0) return@post
+                grid.setWindowAlignment(BaseGridView.WINDOW_ALIGN_NO_EDGE)
+                grid.setWindowAlignmentOffsetPercent(-1f)
+                grid.setWindowAlignmentOffset(rowView.height + grid.verticalSpacing)
+                setSelectedPosition(rowPosition, true, task)
+            }
+        }
+    }
+
+    private fun findVerticalGridView(view: View?): VerticalGridView? {
+        if (view is VerticalGridView) return view
+        if (view is ViewGroup) {
+            for (index in 0 until view.childCount) {
+                findVerticalGridView(view.getChildAt(index))?.let { return it }
+            }
+        }
+        return null
     }
 
     fun fragmentReady() {
@@ -177,7 +261,12 @@ class MainFragment : BrowseSupportFragment() {
     fun prev() {
         view?.post {
             if (tvViewModels.isEmpty()) return@post
-            itemPosition = (itemPosition - 1 + tvViewModels.size) % tvViewModels.size
+            val playingPosition = tvViewModels.indexOfFirst {
+                channelKey(it.getTV()) == SP.selectedChannel
+            }.takeIf { it >= 0 } ?: itemPosition
+            val previousPosition = (playingPosition - 1).coerceAtLeast(0)
+            if (previousPosition == playingPosition) return@post
+            itemPosition = previousPosition
             playChannel(tvViewModels[itemPosition])
         }
     }
@@ -185,7 +274,12 @@ class MainFragment : BrowseSupportFragment() {
     fun next() {
         view?.post {
             if (tvViewModels.isEmpty()) return@post
-            itemPosition = (itemPosition + 1) % tvViewModels.size
+            val playingPosition = tvViewModels.indexOfFirst {
+                channelKey(it.getTV()) == SP.selectedChannel
+            }.takeIf { it >= 0 } ?: itemPosition
+            val nextPosition = (playingPosition + 1).coerceAtMost(tvViewModels.lastIndex)
+            if (nextPosition == playingPosition) return@post
+            itemPosition = nextPosition
             playChannel(tvViewModels[itemPosition])
         }
     }

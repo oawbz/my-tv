@@ -65,10 +65,9 @@ func TestInvalidManifestSwitchAndLogoFallback(t *testing.T) {
 	}))
 	defer upstream.Close()
 	ch := &channel{inputChannel: inputChannel{Name: "Test", Group: "其他", URLs: []string{upstream.URL + "/bad.m3u8", upstream.URL + "/good.m3u8"}, Logo: upstream.URL + "/logo"}, key: "test"}
-	g := &gateway{channels: []*channel{ch}, byKey: map[string]*channel{"test": ch}, refs: map[string]reference{}, base: "http://gateway.test", client: &http.Client{Timeout: time.Second}, probeClient: &http.Client{Timeout: time.Second}}
+	g := &gateway{channels: []*channel{ch}, byKey: map[string]*channel{"test": ch}, refs: map[string]reference{}, client: &http.Client{Timeout: time.Second}, probeClient: &http.Client{Timeout: time.Second}}
 	server := httptest.NewServer(g.router())
 	defer server.Close()
-	g.base = server.URL
 	resp, e := http.Get(server.URL + "/play/test/index.m3u8")
 	if e != nil {
 		t.Fatal(e)
@@ -80,10 +79,11 @@ func TestInvalidManifestSwitchAndLogoFallback(t *testing.T) {
 		t.Fatalf("status=%d body=%s", resp.StatusCode, body.String())
 	}
 	ch.mu.Lock()
-	ranked := append([]string(nil), ch.ranked...)
+	badUntil := ch.badUntil[upstream.URL+"/bad.m3u8"]
+	lastGood := ch.lastGood
 	ch.mu.Unlock()
-	if len(ranked) != 1 || ranked[0] != upstream.URL+"/good.m3u8" {
-		t.Fatalf("failed source not demoted: %v", ranked)
+	if !time.Now().Before(badUntil) || lastGood != upstream.URL+"/good.m3u8" {
+		t.Fatalf("failed source not demoted: badUntil=%v lastGood=%s", badUntil, lastGood)
 	}
 	resp, e = http.Get(server.URL + "/logo/test")
 	if e != nil {

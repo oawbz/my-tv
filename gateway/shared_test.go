@@ -70,7 +70,7 @@ func TestConcurrentHLSViewersShareUpstream(t *testing.T) {
 	}
 	close(start)
 	wg.Wait()
-	if probes.Load() != 1 || manifests.Load() != 1 {
+	if probes.Load() != 0 || manifests.Load() != 1 {
 		t.Fatalf("upstream probes=%d manifests=%d", probes.Load(), manifests.Load())
 	}
 	start = make(chan struct{})

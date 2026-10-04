@@ -61,13 +61,13 @@ func (g *gateway) serveLogo(c *gin.Context, raw string) {
 			} else if len(obj.data) <= 2<<20 {
 				ct := http.DetectContentType(obj.data)
 				if ct == "image/png" || ct == "image/jpeg" || ct == "image/gif" || ct == "image/webp" {
-					c.Header("Cache-Control", "public, max-age=300")
+					c.Header("Cache-Control", g.cacheControl("public, max-age=300"))
 					c.Data(200, ct, obj.data)
 					return
 				}
 			}
 		}
 	}
-	c.Header("Cache-Control", "public, max-age=60")
+	c.Header("Cache-Control", g.cacheControl("public, max-age=60"))
 	c.Data(200, "image/png", defaultLogo())
 }

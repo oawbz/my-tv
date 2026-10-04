@@ -38,6 +38,8 @@ func (g *gateway) probe(ctx context.Context, raw string) (time.Duration, error) 
 	flight := &probeFlight{done: make(chan struct{})}
 	g.probeFlights[key] = flight
 	g.probeMu.Unlock()
+	// The probe may be shared by another viewer; keep its short lifetime
+	// independent of the request that happened to start it.
 	probeCtx, cancel := context.WithTimeout(context.Background(), 4*time.Second)
 	duration, err := g.probeDirect(probeCtx, raw)
 	cancel()

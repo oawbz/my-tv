@@ -15,4 +15,5 @@
 .cxx
 local.properties
 /path/
+/signing/
 /.codex/config.toml

@@ -10,6 +10,8 @@ object SP {
     // If Change channel with up and down in reversed order or not
     private const val KEY_CHANNEL_REVERSAL = "channel_reversal"
     private const val KEY_CHANNEL_NUMBER_INPUT = "channel_number_input"
+    private const val KEY_MOBILE_MODE = "mobile_mode"
+    private const val KEY_MOBILE_SWIPE_CHANNEL = "mobile_swipe_channel"
 
     // If start app on device boot or not
     private const val KEY_BOOT_STARTUP = "boot_startup"
@@ -35,6 +37,14 @@ object SP {
     var channelNumberInput: Boolean
         get() = sp.getBoolean(KEY_CHANNEL_NUMBER_INPUT, false)
         set(value) = sp.edit().putBoolean(KEY_CHANNEL_NUMBER_INPUT, value).apply()
+
+    var mobileMode: Boolean
+        get() = sp.getBoolean(KEY_MOBILE_MODE, false)
+        set(value) = sp.edit().putBoolean(KEY_MOBILE_MODE, value).apply()
+
+    var mobileSwipeChannel: Boolean
+        get() = sp.getBoolean(KEY_MOBILE_SWIPE_CHANNEL, true)
+        set(value) = sp.edit().putBoolean(KEY_MOBILE_SWIPE_CHANNEL, value).apply()
 
     var bootStartup: Boolean
         get() = sp.getBoolean(KEY_BOOT_STARTUP, false)
