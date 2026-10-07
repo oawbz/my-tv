@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.Toast
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.fragment.app.DialogFragment
@@ -22,9 +24,9 @@ class SettingFragment : DialogFragment() {
         dialog?.window?.apply {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             setLayout(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                if (SP.mobileMode) (resources.displayMetrics.heightPixels * 0.9f).toInt()
-                else WindowManager.LayoutParams.WRAP_CONTENT
+                minOf((320 * resources.displayMetrics.density).toInt(),
+                    (resources.displayMetrics.widthPixels * 0.9f).toInt()),
+                (resources.displayMetrics.heightPixels * 0.9f).toInt()
             )
             addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -44,20 +46,21 @@ class SettingFragment : DialogFragment() {
         _binding = SettingBinding.inflate(inflater, container, false)
 
         binding.channelsUrl.setText(SP.channelsUrl)
-        binding.switchMobileMode.run {
-            isChecked = SP.mobileMode
-            setOnCheckedChangeListener { _, checked ->
-                (activity as? MainActivity)?.setInteractionMode(checked)
-                dismiss()
+        binding.playerEngine.adapter = ArrayAdapter(
+            requireContext(), R.layout.player_engine_item, listOf("MediaPlayer", "ExoPlayer")
+        ).apply { setDropDownViewResource(R.layout.player_engine_dropdown_item) }
+        binding.playerEngine.setSelection(if (SP.useExoPlayer) 1 else 0)
+        binding.playerEngine.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val exo = position == 1
+                if (exo != SP.useExoPlayer) {
+                    SP.useExoPlayer = exo
+                    (activity as? MainActivity)?.restartPlaybackEngine()
+                }
             }
-        }
-        binding.switchMobileSwipeChannel.run {
-            visibility = if (SP.mobileMode) View.VISIBLE else View.GONE
-            isChecked = SP.mobileSwipeChannel
-            setOnCheckedChangeListener { _, checked -> SP.mobileSwipeChannel = checked }
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
         binding.closeMobileSettings.apply {
-            visibility = if (SP.mobileMode) View.VISIBLE else View.GONE
             setOnClickListener { dismiss() }
         }
         binding.saveChannelsUrl.setOnClickListener {
@@ -66,7 +69,6 @@ class SettingFragment : DialogFragment() {
                 Toast.makeText(context, "请输入频道列表地址", Toast.LENGTH_SHORT).show()
             } else {
                 (activity as? MainActivity)?.apply {
-                    settingHoldOpen()
                     reloadChannels(url) { success ->
                         this@SettingFragment.context?.let {
                             Toast.makeText(
@@ -75,7 +77,6 @@ class SettingFragment : DialogFragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                        if (success) settingDelayHide()
                     }
                 }
             }
@@ -85,7 +86,6 @@ class SettingFragment : DialogFragment() {
             isChecked = SP.channelReversal
             setOnCheckedChangeListener { _, isChecked ->
                 SP.channelReversal = isChecked
-                (activity as MainActivity).settingDelayHide()
             }
         }
 
@@ -93,7 +93,6 @@ class SettingFragment : DialogFragment() {
             isChecked = SP.channelNumberInput
             setOnCheckedChangeListener { _, isChecked ->
                 SP.channelNumberInput = isChecked
-                (activity as MainActivity).settingDelayHide()
             }
         }
 
@@ -101,7 +100,6 @@ class SettingFragment : DialogFragment() {
             isChecked = SP.bootStartup
             setOnCheckedChangeListener { _, isChecked ->
                 SP.bootStartup = isChecked
-                (activity as MainActivity).settingDelayHide()
             }
         }
 

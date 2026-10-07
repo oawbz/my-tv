@@ -1,5 +1,8 @@
 package com.lizongying.mytv
 
+import android.app.UiModeManager
+import android.content.res.Configuration
+import android.content.pm.PackageManager
 import android.content.Context
 import android.content.SharedPreferences
 
@@ -10,8 +13,6 @@ object SP {
     // If Change channel with up and down in reversed order or not
     private const val KEY_CHANNEL_REVERSAL = "channel_reversal"
     private const val KEY_CHANNEL_NUMBER_INPUT = "channel_number_input"
-    private const val KEY_MOBILE_MODE = "mobile_mode"
-    private const val KEY_MOBILE_SWIPE_CHANNEL = "mobile_swipe_channel"
 
     // If start app on device boot or not
     private const val KEY_BOOT_STARTUP = "boot_startup"
@@ -22,11 +23,20 @@ object SP {
     private const val KEY_SELECTED_CHANNEL = "selected_channel"
 
     private lateinit var sp: SharedPreferences
+    private var defaultExoPlayer = true
+
+    var useExoPlayer: Boolean
+        get() = sp.getBoolean("use_exoplayer", defaultExoPlayer)
+        set(value) = sp.edit().putBoolean("use_exoplayer", value).apply()
 
     /**
      * The method must be invoked as early as possible(At least before using the keys)
      */
     fun init(context: Context) {
+        val mode = context.getSystemService(Context.UI_MODE_SERVICE) as? UiModeManager
+        defaultExoPlayer = mode?.currentModeType != Configuration.UI_MODE_TYPE_TELEVISION &&
+            !context.packageManager.hasSystemFeature(PackageManager.FEATURE_TELEVISION) &&
+            !context.packageManager.hasSystemFeature("android.software.leanback")
         sp = context.getSharedPreferences(SP_FILE_NAME, Context.MODE_PRIVATE)
     }
 
@@ -37,14 +47,6 @@ object SP {
     var channelNumberInput: Boolean
         get() = sp.getBoolean(KEY_CHANNEL_NUMBER_INPUT, false)
         set(value) = sp.edit().putBoolean(KEY_CHANNEL_NUMBER_INPUT, value).apply()
-
-    var mobileMode: Boolean
-        get() = sp.getBoolean(KEY_MOBILE_MODE, false)
-        set(value) = sp.edit().putBoolean(KEY_MOBILE_MODE, value).apply()
-
-    var mobileSwipeChannel: Boolean
-        get() = sp.getBoolean(KEY_MOBILE_SWIPE_CHANNEL, true)
-        set(value) = sp.edit().putBoolean(KEY_MOBILE_SWIPE_CHANNEL, value).apply()
 
     var bootStartup: Boolean
         get() = sp.getBoolean(KEY_BOOT_STARTUP, false)

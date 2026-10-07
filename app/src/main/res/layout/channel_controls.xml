@@ -4,14 +4,14 @@
     android:layout_height="match_parent">
 
     <View
-        android:id="@+id/mobile_video_tap"
+        android:id="@+id/channel_video_tap"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:contentDescription="点按打开频道列表，长按打开设置"
         android:clickable="true" />
 
     <View
-        android:id="@+id/mobile_scrim"
+        android:id="@+id/channel_scrim"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#99000000"
@@ -20,7 +20,7 @@
         android:visibility="gone" />
 
     <LinearLayout
-        android:id="@+id/mobile_drawer"
+        android:id="@+id/channel_drawer"
         android:layout_width="400dp"
         android:layout_height="match_parent"
         android:background="#F21B1B1B"
@@ -45,7 +45,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/mobile_close_drawer"
+                android:id="@+id/channel_close_drawer"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:contentDescription="关闭频道列表"
@@ -67,7 +67,7 @@
                 android:fillViewport="true">
 
                 <LinearLayout
-                    android:id="@+id/mobile_groups"
+                    android:id="@+id/channel_groups"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />
@@ -79,14 +79,14 @@
                 android:background="#40FFFFFF" />
 
             <ScrollView
-                android:id="@+id/mobile_channel_scroll"
+                android:id="@+id/channel_scroll"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:fillViewport="true">
 
                 <LinearLayout
-                    android:id="@+id/mobile_channels"
+                    android:id="@+id/channel_items"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical" />

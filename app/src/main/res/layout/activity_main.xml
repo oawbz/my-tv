@@ -8,12 +8,12 @@
     tools:ignore="MergeRootFrame">
 
     <FrameLayout
-        android:id="@+id/main_browse_fragment"
+        android:id="@+id/player_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <include
-        android:id="@+id/mobile_controls"
-        layout="@layout/mobile_controls"
+        android:id="@+id/channel_controls"
+        layout="@layout/channel_controls"
         android:visibility="gone" />
 </FrameLayout>

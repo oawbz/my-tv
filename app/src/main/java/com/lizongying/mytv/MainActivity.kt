@@ -4,18 +4,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
-import android.view.GestureDetector
 import android.view.KeyEvent
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
 import android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
-import androidx.leanback.widget.ImageCardView
 import com.lizongying.mytv.models.TVViewModel
-import kotlin.math.abs
 
 
 class MainActivity : FragmentActivity() {
@@ -26,15 +20,13 @@ class MainActivity : FragmentActivity() {
     private lateinit var mainFragment: MainFragment
     private lateinit var infoFragment: InfoFragment
     private lateinit var settingFragment: SettingFragment
-    private lateinit var mobileControls: MobileControls
+    private lateinit var channelControls: ChannelControls
 
     private var doubleBackToExitPressedOnce = false
 
-    private lateinit var gestureDetector: GestureDetector
-    private var touchStartedOnChannelCard = false
 
     private val handler = Handler()
-    private val delayHideMain: Long = 10000
+    private val channelListTimeoutMillis: Long = 10000
     private var channelNumberInput = ""
 
     private val channelNumberTimeout = Runnable {
@@ -55,7 +47,7 @@ class MainActivity : FragmentActivity() {
         settingFragment = restored.filterIsInstance<SettingFragment>().firstOrNull() ?: SettingFragment()
 
         setContentView(R.layout.activity_main)
-        mobileControls = MobileControls(this, findViewById(R.id.mobile_controls))
+        channelControls = ChannelControls(this, findViewById(R.id.channel_controls))
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
@@ -64,13 +56,12 @@ class MainActivity : FragmentActivity() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         if (savedInstanceState == null) {
             fragmentTransaction
-                .add(R.id.main_browse_fragment, playerFragment)
-                .add(R.id.main_browse_fragment, infoFragment)
-                .add(R.id.main_browse_fragment, mainFragment)
+                .add(R.id.player_container, playerFragment)
+                .add(R.id.player_container, infoFragment)
+                .add(mainFragment, "channels")
         }
-        fragmentTransaction.hide(mainFragment).commit()
-        gestureDetector = GestureDetector(this, GestureListener())
-        mobileControls.setEnabled(SP.mobileMode)
+        fragmentTransaction.commit()
+        channelControls.enableControls()
 
     }
 
@@ -86,34 +77,25 @@ class MainActivity : FragmentActivity() {
     fun reloadChannels(url: String, onResult: (Boolean) -> Unit) =
         mainFragment.reloadChannels(url, onResult)
 
-    fun settingHoldOpen() {
-        handler.removeCallbacks(hideSetting)
-    }
-
     fun play(tvViewModel: TVViewModel) {
         playerFragment.play(tvViewModel)
-        mobileControls.setChannel(tvViewModel)
-        if (!SP.mobileMode) mainFragment.view?.requestFocus()
+        channelControls.setChannel(tvViewModel)
     }
 
-    fun updateMobileChannels(groups: List<Pair<String, List<TVViewModel>>>) {
-        mobileControls.setGroups(groups)
+    fun updateChannelGroups(groups: List<Pair<String, List<TVViewModel>>>) {
+        channelControls.setGroups(groups)
     }
 
-    fun playMobileChannel(channel: TVViewModel) {
-        mainFragment.playMobileChannel(channel)
+    fun playChannelFromList(channel: TVViewModel) {
+        mainFragment.playChannelFromList(channel)
     }
 
-    fun openMobileSettings() {
+    fun openSettings() {
         showSetting()
     }
 
-    fun setInteractionMode(mobile: Boolean) {
-        SP.mobileMode = mobile
-        handler.removeCallbacks(hideMain)
-        handler.removeCallbacks(hideSetting)
-        if (mobile && !mainFragment.isHidden) hideMainFragment()
-        mobileControls.setEnabled(mobile)
+    fun restartPlaybackEngine() {
+        playerFragment.restartEngine()
     }
 
     fun showChannelSwitching() {
@@ -128,50 +110,29 @@ class MainActivity : FragmentActivity() {
         mainFragment.next()
     }
 
-    fun switchMainFragment() {
-        if (mainFragment.isHidden) {
-            mainFragment.focusPlayingChannel()
-            showChannelList()
-        } else {
-            hideMainFragment()
-        }
+    fun toggleChannelList() {
+        if (channelControls.isDrawerOpen()) closeChannelList() else showChannelList()
     }
 
     fun showChannelList() {
-        if (SP.mobileMode) return
-        if (mainFragment.isHidden) {
-            supportFragmentManager.beginTransaction().show(mainFragment).commit()
-        }
-        mainActive()
+        channelControls.openDrawer()
+        channelListActive()
     }
 
-    fun mainActive() {
-        if (SP.mobileMode) return
-        handler.removeCallbacks(hideMain)
-        handler.postDelayed(hideMain, delayHideMain)
+    fun channelListActive() {
+        handler.removeCallbacks(hideChannelListTimeout)
+        handler.postDelayed(hideChannelListTimeout, channelListTimeoutMillis)
     }
 
-    fun settingDelayHide() {
-        handler.removeCallbacks(hideSetting)
-    }
+    private val hideChannelListTimeout = Runnable { channelControls.closeAll() }
 
-    private val hideMain = Runnable {
-        if (!mainFragment.isHidden) {
-            supportFragmentManager.beginTransaction().hide(mainFragment).commit()
-        }
-    }
-
-    private fun hideMainFragment() {
-        if (!mainFragment.isHidden) {
-            handler.removeCallbacks(hideMain)
-            supportFragmentManager.beginTransaction()
-                .hide(mainFragment)
-                .commit()
-        }
+    private fun closeChannelList() {
+        handler.removeCallbacks(hideChannelListTimeout)
+        channelControls.closeAll()
     }
 
     fun hideChannelList() {
-        hideMainFragment()
+        closeChannelList()
     }
 
     fun fragmentReady(tag: String) {
@@ -188,99 +149,39 @@ class MainActivity : FragmentActivity() {
         playbackStarted = false
     }
 
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        if (SP.mobileMode) return super.dispatchTouchEvent(event)
-        if (event.actionMasked == MotionEvent.ACTION_DOWN) {
-            touchStartedOnChannelCard = !mainFragment.isHidden &&
-                isPointOnChannelCard(mainFragment.view, event.rawX, event.rawY)
-        }
-        gestureDetector.onTouchEvent(event)
-        return super.dispatchTouchEvent(event)
-    }
-
-    private inner class GestureListener : GestureDetector.SimpleOnGestureListener() {
-
-        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            // A card click hides the list immediately. Remember where the touch started so the
-            // delayed gesture callback does not mistake that same tap for a video-area tap.
-            if (touchStartedOnChannelCard) {
-                touchStartedOnChannelCard = false
+    override fun dispatchKeyEvent(event: KeyEvent): Boolean {
+        if (channelControls.isDrawerOpen() && !settingFragment.isVisible) {
+            val navigation = event.keyCode in setOf(
+                KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_DPAD_DOWN,
+                KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT,
+                KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER,
+            )
+            if (navigation) {
+                if (event.action == KeyEvent.ACTION_DOWN &&
+                    (event.repeatCount == 0 || event.keyCode !in setOf(
+                        KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER
+                    ))
+                ) channelControls.handleRemoteKey(event.keyCode)
                 return true
             }
-            if (mainFragment.isHidden) {
-                switchMainFragment()
-            } else if (!isPointOnChannelCard(mainFragment.view, e.rawX, e.rawY)) {
-                hideMainFragment()
-            }
-            return true
         }
-
-        override fun onDoubleTap(e: MotionEvent): Boolean {
-            showSetting()
-            return true
-        }
-
-        override fun onFling(
-            e1: MotionEvent?,
-            e2: MotionEvent,
-            velocityX: Float,
-            velocityY: Float
-        ): Boolean {
-            if (abs(velocityX) >= abs(velocityY)) {
-                return super.onFling(e1, e2, velocityX, velocityY)
-            }
-            if (velocityY > 0) {
-                if (mainFragment.isHidden) {
-                    prev()
-                }
-            }
-            if (velocityY < 0) {
-                if (mainFragment.isHidden) {
-                    next()
-                }
-            }
-            return super.onFling(e1, e2, velocityX, velocityY)
-        }
-    }
-
-    private fun isPointOnChannelCard(view: View?, rawX: Float, rawY: Float): Boolean {
-        if (view == null || view.visibility != View.VISIBLE) return false
-
-        if (view is ImageCardView) {
-            val bounds = android.graphics.Rect()
-            return view.getGlobalVisibleRect(bounds) && bounds.contains(rawX.toInt(), rawY.toInt())
-        }
-
-        if (view is ViewGroup) {
-            for (index in 0 until view.childCount) {
-                if (isPointOnChannelCard(view.getChildAt(index), rawX, rawY)) return true
-            }
-        }
-        return false
+        return super.dispatchKeyEvent(event)
     }
 
     private fun showSetting() {
-        if (!SP.mobileMode && !mainFragment.isHidden) {
-            return
-        }
+        if (supportFragmentManager.isStateSaved || isFinishing) return
+        channelControls.closeAll()
 
         Log.i(TAG, "settingFragment ${settingFragment.isVisible}")
         if (!settingFragment.isVisible) {
-            settingFragment.show(supportFragmentManager, "setting")
+            settingFragment.showNow(supportFragmentManager, "setting")
         } else {
-            handler.removeCallbacks(hideSetting)
-            settingFragment.dismiss()
-        }
-    }
-
-    private val hideSetting = Runnable {
-        if (settingFragment.isVisible) {
             settingFragment.dismiss()
         }
     }
 
     private fun channelUp() {
-        if (mainFragment.isHidden) {
+        if (!channelControls.isDrawerOpen()) {
             if (SP.channelReversal) {
                 next()
                 return
@@ -290,7 +191,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun channelDown() {
-        if (mainFragment.isHidden) {
+        if (!channelControls.isDrawerOpen()) {
             if (SP.channelReversal) {
                 prev()
                 return
@@ -333,11 +234,7 @@ class MainActivity : FragmentActivity() {
     }
 
     private fun back() {
-        if (SP.mobileMode && mobileControls.closeOverlay()) return
-        if (!mainFragment.isHidden) {
-            hideMainFragment()
-            return
-        }
+        if (channelControls.closeOverlay()) return
 
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed()
@@ -354,13 +251,6 @@ class MainActivity : FragmentActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         Log.i(TAG, "keyCode $keyCode, event $event")
-        if (SP.mobileMode) {
-            if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE) {
-                back()
-                return true
-            }
-            return super.onKeyDown(keyCode, event)
-        }
         val digit = keyCode.toChannelDigit()
         if (digit != null && SP.channelNumberInput) {
             if (event?.repeatCount == 0) handleChannelDigit(digit)
@@ -408,30 +298,28 @@ class MainActivity : FragmentActivity() {
             }
 
             KeyEvent.KEYCODE_ENTER -> {
-                if (mainFragment.isHidden) {
-                    switchMainFragment()
+                if (!channelControls.isDrawerOpen()) {
+                    toggleChannelList()
                 } else {
-                    mainFragment.playSelectedChannel()
+                    channelControls.handleRemoteKey(keyCode)
                 }
                 return true
             }
 
             KeyEvent.KEYCODE_DPAD_CENTER -> {
-                if (mainFragment.isHidden) {
-                    switchMainFragment()
+                if (!channelControls.isDrawerOpen()) {
+                    toggleChannelList()
                 } else {
-                    mainFragment.playSelectedChannel()
+                    channelControls.handleRemoteKey(keyCode)
                 }
                 return true
             }
 
             KeyEvent.KEYCODE_DPAD_LEFT -> {
-                mainFragment.moveChannelSelection(-1)
                 return true
             }
 
             KeyEvent.KEYCODE_DPAD_RIGHT -> {
-                mainFragment.moveChannelSelection(1)
                 return true
             }
 
@@ -464,8 +352,8 @@ class MainActivity : FragmentActivity() {
     override fun onResume() {
         Log.i(TAG, "onResume")
         super.onResume()
-        if (!SP.mobileMode && !mainFragment.isHidden) {
-            handler.postDelayed(hideMain, delayHideMain)
+        if (channelControls.isDrawerOpen()) {
+            handler.postDelayed(hideChannelListTimeout, channelListTimeoutMillis)
         }
     }
 
@@ -474,9 +362,8 @@ class MainActivity : FragmentActivity() {
         super.onPause()
         cancelChannelNumberEntry()
         playerFragment.hideChannelNumber()
-        handler.removeCallbacks(hideMain)
-        handler.removeCallbacks(hideSetting)
-        mobileControls.closeAll()
+        handler.removeCallbacks(hideChannelListTimeout)
+        channelControls.closeAll()
     }
 
     private companion object {
